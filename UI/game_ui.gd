@@ -12,6 +12,10 @@ func _ready() -> void:
 	
 	# Add to group so other objects can call us
 	add_to_group("GameManager")
+	
+	# Stop music during gameplay
+	if has_node("/root/AudioManager"):
+		get_node("/root/AudioManager").stop_music()
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -40,6 +44,8 @@ func game_over() -> void:
 	lose_panel.visible = true
 	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	if has_node("/root/AudioManager"):
+		get_node("/root/AudioManager").play_music()
 
 func level_complete() -> void:
 	if win_panel.visible or lose_panel.visible:
@@ -48,6 +54,8 @@ func level_complete() -> void:
 	win_panel.visible = true
 	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	if has_node("/root/AudioManager"):
+		get_node("/root/AudioManager").play_music()
 
 func _on_retry_pressed() -> void:
 	get_tree().paused = false
@@ -75,3 +83,10 @@ func _on_continue_pressed() -> void:
 	else:
 		# End of game or unknown level, go back to menu
 		get_tree().change_scene_to_file("res://UI/StartMenu.tscn")
+
+func _exit_tree() -> void:
+	# When leaving the scene (e.g. to menu), ensure music is playing if we were paused?
+	# Actually, if we quit to menu, we want music.
+	# If we restart, we want music.
+	# If logic is robust, StartMenu calls play_music().
+	pass

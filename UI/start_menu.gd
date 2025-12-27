@@ -15,6 +15,9 @@ func _ready() -> void:
 	else:
 		# Fallback if autoload isn't working for some reason
 		continue_button.disabled = true
+		
+	if has_node("/root/AudioManager"):
+		get_node("/root/AudioManager").play_music()
 
 func _on_continue_pressed() -> void:
 	if has_node("/root/SaveManager"):
