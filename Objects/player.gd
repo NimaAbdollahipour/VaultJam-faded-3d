@@ -11,6 +11,9 @@ const BALL_RADIUS = 0.5
 @onready var mesh: MeshInstance3D = $MeshInstance3D
 
 var is_safe: bool = false
+var was_on_floor: bool = false
+var push_cooldown: float = 0.0
+const PUSH_INTERVAL: float = 0.5
 
 func _ready() -> void:
 	axis_lock_linear_z = true
@@ -35,6 +38,8 @@ func _process(delta: float) -> void:
 		if color.a <= 0.0:
 			print("Game Over")
 			get_tree().call_group("GameManager", "game_over")
+			if has_node("/root/AudioManager"):
+				get_node("/root/AudioManager").play_sfx("lose")
 			set_process(false)
 			set_physics_process(false)
 
@@ -43,9 +48,15 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
+	# Update push cooldown
+	if push_cooldown > 0:
+		push_cooldown -= delta
+
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
+		if has_node("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("jump")
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -63,10 +74,19 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	
+	# Landing Sound
+	if not was_on_floor and is_on_floor():
+		if has_node("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("land")
+	
+	was_on_floor = is_on_floor()
+	
 	# Check for Game Over (Fall off)
 	if global_position.y < -10.0:
 		print("Game Over")
 		get_tree().call_group("GameManager", "game_over")
+		if has_node("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("lose")
 		set_process(false)
 		set_physics_process(false)
 	
@@ -87,6 +107,11 @@ func _physics_process(delta: float) -> void:
 				push_dir.y = 0
 				push_dir = push_dir.normalized()
 				collider.apply_central_impulse(push_dir * push_force * delta)
+				
+				if push_cooldown <= 0:
+					if has_node("/root/AudioManager"):
+						get_node("/root/AudioManager").play_sfx("push")
+					push_cooldown = PUSH_INTERVAL
 
 # Called by ColorSwitcher
 func change_color(new_color: String) -> void:
@@ -95,3 +120,6 @@ func change_color(new_color: String) -> void:
 		var color = Color(new_color)
 		color.a = 1.0 # Reset opacity
 		mesh.material_override.albedo_color = color
+	
+	if has_node("/root/AudioManager"):
+		get_node("/root/AudioManager").play_sfx("change_color")
