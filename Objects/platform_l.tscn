@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://dye0um56o6jky"]
+
+[ext_resource type="Script" uid="uid://dkug4f1vpayrg" path="res://Objects/platform_s.gd" id="1_saemc"]
+[ext_resource type="ArrayMesh" uid="uid://osje5uy1wxti" path="res://BeforeItFadesModels/PlatformVeryLarge.obj" id="2_saemc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l8pfd"]
+size = Vector3(3.9883423, 1.9815674, 32)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qy1um"]
+size = Vector3(4.0007324, 2.4437866, 32)
+
+[node name="PlatformS" type="StaticBody3D"]
+script = ExtResource("1_saemc")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.026601315, 6.1035156e-05, -2.0346219e-05)
+shape = SubResource("BoxShape3D_l8pfd")
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -5.0862633e-05, 0, -0.000111897796)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0059814453, 0.24673462, -0.010131677)
+shape = SubResource("BoxShape3D_qy1um")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -5.0862633e-05, 0, -0.000111897796)
+mesh = ExtResource("2_saemc")

@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://cuw5ooqhyl0vo"]
+
+[ext_resource type="Script" uid="uid://ckrehlt2hvknq" path="res://Objects/box.gd" id="2_script"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eic30"]
+size = Vector3(1.9832764, 1.9721069, 1.9938965)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vwonl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iy76c"]
+size = Vector3(2.137146, 2.153885, 2.1444702)
+
+[node name="RigidBody3D" type="RigidBody3D"]
+mass = 0.2
+script = ExtResource("2_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.1035156e-05, -0.0027770996, 0.0032958984)
+shape = SubResource("BoxShape3D_eic30")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+mesh = SubResource("BoxMesh_vwonl")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002105713, -6.866455e-05, -9.1552734e-05)
+shape = SubResource("BoxShape3D_iy76c")
