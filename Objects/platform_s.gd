@@ -23,16 +23,8 @@ const NEON_COLORS = {
 
 func _ready() -> void:
 	if mesh:
-		mesh.visible = false
-		
+		mesh.visible = true
 	update_scifi_material()
-	
-	if Engine.is_editor_hint():
-		if mesh: mesh.visible = true
-	else:
-		await get_tree().process_frame
-		if mesh:
-			mesh.visible = true
 
 func update_scifi_material() -> void:
 	if not mesh: return
@@ -46,15 +38,23 @@ func update_scifi_material() -> void:
 	
 	var target_color = NEON_COLORS.get(platform_color, Color(platform_color))
 	
-	# Load texture with fallback
+	# Load texture (Directly via load for Godot's built-in caching)
 	var texture_path = "res://assets/tech_pattern.jpg"
 	var tech_texture = null
+	
 	if FileAccess.file_exists(texture_path):
 		tech_texture = load(texture_path)
+		
+		# Fallback: Raw load if resource load failed
 		if not tech_texture:
 			var img = Image.new()
 			if img.load(texture_path) == OK:
 				tech_texture = ImageTexture.create_from_image(img)
+	else:
+		# Fallback to PNG name just in case local rename didn't sync 
+		var texture_path_alt = "res://assets/tech_pattern.png"
+		if FileAccess.file_exists(texture_path_alt):
+			tech_texture = load(texture_path_alt)
 	
 	# Sci-Fi / Metallic Settings
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

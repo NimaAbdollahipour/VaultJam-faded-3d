@@ -2,7 +2,7 @@
 
 [ext_resource type="ArrayMesh" uid="uid://cgqcmufb685pt" path="res://BeforeItFadesModels/PlayerBall.obj" id="1_8r7yd"]
 [ext_resource type="Script" uid="uid://dykf2lc050g7p" path="res://Objects/player.gd" id="1_n6db0"]
-[ext_resource type="Texture2D" uid="uid://degaka2b8hm2s" path="res://assets/GameBackground.png" id="3_yk4ok"]
+
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_n6db0"]
 
@@ -25,6 +25,4 @@ shape = SubResource("SphereShape3D_yk4ok")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.92538846, 0.37902012, 0, -0.37902012, 0.92538846, 0, 3.3274765, 6.9938602)
 
-[node name="Sprite3D" type="Sprite3D" parent="."]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, -8)
-texture = ExtResource("3_yk4ok")
+

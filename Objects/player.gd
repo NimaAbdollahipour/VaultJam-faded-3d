@@ -38,12 +38,8 @@ func _ready() -> void:
 	
 	# Prepare all meshes for fading
 	for vm in visual_meshes:
-		if vm.visible:
-			vm.visible = false # Hide initially for pop-in fix
-			
 		# Ensure every mesh has a material override we can fade
 		if not vm.material_override:
-			# If it has a surface material, clone it. Else create new.
 			var source_mat = vm.get_active_material(0)
 			var new_mat: StandardMaterial3D
 			
@@ -51,24 +47,17 @@ func _ready() -> void:
 				new_mat = source_mat.duplicate()
 			else:
 				new_mat = StandardMaterial3D.new()
-				# Try to preserve color if possible, though tough for plain BaseMaterial
 				if source_mat and "albedo_color" in source_mat:
 					new_mat.albedo_color = source_mat.albedo_color
 			
-			# Force transparency for fading
 			new_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			vm.material_override = new_mat
 		else:
-			# Existing override, just ensure it handles transparency
 			if vm.material_override.transparency != BaseMaterial3D.TRANSPARENCY_ALPHA:
 				vm.material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 
 	axis_lock_linear_z = true
 	update_scifi_material(player_color)
-	
-	await get_tree().process_frame
-	for vm in visual_meshes:
-		vm.visible = true
 
 func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 	for child in node.get_children():
@@ -205,25 +194,23 @@ func update_scifi_material(color_name: String) -> void:
 	
 	var target_color = NEON_COLORS.get(color_name, Color(color_name))
 	
-	# Load texture
+	# Load texture (Directly via load for Godot's built-in caching)
 	var texture_path = "res://assets/tech_pattern.jpg"
 	var tech_texture = null
 	
 	if FileAccess.file_exists(texture_path):
-		# Try standard resource load first
 		tech_texture = load(texture_path)
 		
-		# Fallback: If resource load fails (e.g. import issue), load raw image
+		# Fallback: Raw load if resource load failed
 		if not tech_texture:
-			print("Resource load failed, trying raw image load...")
 			var img = Image.new()
-			var err = img.load(texture_path)
-			if err == OK:
+			if img.load(texture_path) == OK:
 				tech_texture = ImageTexture.create_from_image(img)
-			else:
-				print("Failed to load raw image: ", err)
 	else:
-		print("Texture file not found at: ", texture_path)
+		# Fallback to PNG name just in case local rename didn't sync 
+		var texture_path_alt = "res://assets/tech_pattern.png"
+		if FileAccess.file_exists(texture_path_alt):
+			tech_texture = load(texture_path_alt)
 	
 	# Sci-Fi / Metallic Settings
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
