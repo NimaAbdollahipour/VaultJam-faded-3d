@@ -47,7 +47,7 @@ func update_scifi_material() -> void:
 	var target_color = NEON_COLORS.get(platform_color, Color(platform_color))
 	
 	# Load texture with fallback
-	var texture_path = "res://assets/tech_pattern.png"
+	var texture_path = "res://assets/tech_pattern.jpg"
 	var tech_texture = null
 	if FileAccess.file_exists(texture_path):
 		tech_texture = load(texture_path)
