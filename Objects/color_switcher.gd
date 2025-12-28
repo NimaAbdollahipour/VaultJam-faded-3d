@@ -24,9 +24,46 @@ const NEON_COLORS = {
 
 func _ready() -> void:
 	update_visuals()
+	apply_tech_pattern_to_model()
 	if not Engine.is_editor_hint():
 		if area_3d and not area_3d.body_entered.is_connected(_on_body_entered):
 			area_3d.body_entered.connect(_on_body_entered)
+
+func apply_tech_pattern_to_model() -> void:
+	# Load tech_pattern texture
+	var tech_texture: Texture2D = null
+	if FileAccess.file_exists("res://assets/tech_pattern.jpg"):
+		tech_texture = load("res://assets/tech_pattern.jpg")
+	elif FileAccess.file_exists("res://assets/tech_pattern.png"):
+		tech_texture = load("res://assets/tech_pattern.png")
+	
+	if not tech_texture:
+		return
+	
+	# Apply to ColorChanger GLB model
+	var glb_model = get_node_or_null("ColorChanger")
+	if glb_model:
+		_apply_texture_to_glb(glb_model, tech_texture)
+
+func _apply_texture_to_glb(node: Node, texture: Texture2D) -> void:
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			var mat: StandardMaterial3D
+			if child.material_override and child.material_override is StandardMaterial3D:
+				mat = child.material_override
+			else:
+				var source_mat = child.get_active_material(0)
+				if source_mat is BaseMaterial3D:
+					mat = source_mat.duplicate()
+				else:
+					mat = StandardMaterial3D.new()
+				child.material_override = mat
+			
+			mat.albedo_texture = texture
+			mat.uv1_triplanar = true
+			mat.uv1_scale = Vector3(0.5, 0.5, 0.5)
+		
+		_apply_texture_to_glb(child, texture)
 
 func update_visuals() -> void:
 	var target_color = NEON_COLORS.get(switcher_color, Color(switcher_color))
@@ -52,9 +89,8 @@ func update_visuals() -> void:
 		mat.emission = target_color
 		mat.emission_energy_multiplier = 0.0  # No glow
 		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
-		print("[COLOR_SWITCHER] ✓ Applied color to ColorIdentifier: ", target_color)
-	else:
-		print("[COLOR_SWITCHER] ⚠ ColorIdentifier mesh not found!")
+
+
 	
 	# Clear overrides on the GLB model to preserve original textures
 	var glb_model = get_node_or_null("ColorChanger")
@@ -69,5 +105,5 @@ func _clear_overrides_recursive(node: Node) -> void:
 
 func _on_body_entered(body: Node3D) -> void:
 	if body.has_method("change_color"):
-		print("Switching color to: ", switcher_color)
+
 		body.change_color(switcher_color)

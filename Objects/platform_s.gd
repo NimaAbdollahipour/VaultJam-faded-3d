@@ -37,7 +37,6 @@ func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 func update_visuals() -> void:
 	# Apply game color with tech_pattern texture
 	var target_color = NEON_COLORS.get(platform_color, Color(platform_color))
-	print("[PLATFORM] Updating platform color to: ", platform_color, " -> ", target_color)
 	
 	# Load tech_pattern texture
 	var tech_texture: Texture2D = null
@@ -72,7 +71,7 @@ func update_visuals() -> void:
 		mat.emission_energy_multiplier = 0.0  # No glow
 		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
 	
-	print("[PLATFORM] Applied colored tech_pattern to ", visual_meshes.size(), " meshes")
+
 
 func fade(delta: float) -> void:
 	var fully_faded = true

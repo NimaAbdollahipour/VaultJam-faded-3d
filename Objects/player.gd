@@ -47,9 +47,8 @@ func _ready() -> void:
 	if not mesh and visual_meshes.size() > 0:
 		mesh = visual_meshes[0]
 	
-	print("[PLAYER] Found ", visual_meshes.size(), " visual meshes")
 	
-	# Initialize materials for fading on ALL meshes (not just ColorIdentifier)
+	# Initialize materials for fading on ALL meshes (enable transparency only)
 	for vm in visual_meshes:
 		if not vm.material_override:
 			var source_mat = vm.get_active_material(0)
@@ -60,11 +59,8 @@ func _ready() -> void:
 			else:
 				new_mat = StandardMaterial3D.new()
 			
+			# Only enable transparency, preserve everything else
 			new_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			# Ensure material starts at full opacity
-			var initial_color = new_mat.albedo_color
-			initial_color.a = 1.0
-			new_mat.albedo_color = initial_color
 			vm.material_override = new_mat
 	
 	# Apply color to ColorIdentifier mesh
@@ -74,7 +70,7 @@ func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 	for child in node.get_children():
 		if child is MeshInstance3D:
 			list.append(child)
-			print("[PLAYER] Found MeshInstance3D: ", child.name)
+
 		# Always recurse into children to find nested meshes
 		_find_meshes_recursive(child, list)
 
@@ -95,11 +91,7 @@ func _process(delta: float) -> void:
 	# REVERSED LOGIC: Player fades when NOT on matching platform or in air
 	if not is_on_matching_platform:
 		target_alpha = 0.0
-		if current_alpha > 0.1:  # Only print when noticeably fading
-			print("[PLAYER] FADING - Alpha: ", "%.2f" % current_alpha, " (not on matching platform or in air)")
-	else:
-		if current_alpha < 0.9:  # Only print when recovering
-			print("[PLAYER] STABLE - Alpha: ", "%.2f" % current_alpha, " (on matching platform)")
+
 	
 	var new_alpha = move_toward(current_alpha, target_alpha, fade_rate * delta)
 	
@@ -116,7 +108,7 @@ func _process(delta: float) -> void:
 	
 	# Game Over if player fades out completely
 	if new_alpha <= 0.0:
-		print("Game Over: Player Faded")
+
 		get_tree().call_group("GameManager", "game_over")
 		if has_node("/root/AudioManager"):
 			get_node("/root/AudioManager").play_sfx("lose")
@@ -165,7 +157,7 @@ func _physics_process(delta: float) -> void:
 	
 	# Check for Game Over (Fall off)
 	if global_position.y < -10.0:
-		print("Game Over")
+
 		get_tree().call_group("GameManager", "game_over")
 		if has_node("/root/AudioManager"):
 			get_node("/root/AudioManager").play_sfx("lose")
@@ -188,7 +180,6 @@ func _physics_process(delta: float) -> void:
 			if collider.platform_color == player_color:
 				# MATCH: Track collision time, platform will fade
 				if not last_platform_match_state:
-					print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MATCH) - Mode: ", plat_fade_mode)
 					last_platform_match_state = true
 				currently_colliding.append(obj_id)
 				
@@ -201,20 +192,19 @@ func _physics_process(delta: float) -> void:
 				# Start fading after 2 seconds of continuous collision
 				if collision_timers[obj_id] >= FADE_DELAY:
 					collider.fade(delta)
-					print("[PLAYER] Fading platform (", collision_timers[obj_id], "s)")
+
 				
 				is_on_matching_platform = true
 			else:
 				# MISMATCH: Player fades (via is_on_matching_platform = false), platform stays solid
 				if last_platform_match_state:
-					print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MISMATCH) - Player will fade")
 					last_platform_match_state = false
 				
 		# Check for Box collision
 		if collider is RigidBody3D and "box_color" in collider:
 			if collider.box_color == player_color:
 				# MATCH: Only push, no fading for boxes
-				print("[COLLISION] Player: ", player_color, " touching Box: ", collider.box_color, " (MATCH)")
+
 				
 				# Push physics
 				var push_dir = -collision.get_normal()
@@ -256,11 +246,10 @@ func change_color(new_color: String) -> void:
 func update_scifi_material(color_name: String) -> void:
 	# Apply game color to ColorIdentifier mesh
 	var target_color = NEON_COLORS.get(color_name, Color(color_name))
-	print("[PLAYER] Updating ColorIdentifier to color: ", color_name, " -> ", target_color)
 	
 	for vm in visual_meshes:
 		if vm.name == "ColorIdentifier":
-			print("[PLAYER] Found ColorIdentifier mesh!")
+
 			# Apply color with emission
 			var mat: StandardMaterial3D
 			if vm.material_override and vm.material_override is StandardMaterial3D:
@@ -276,7 +265,6 @@ func update_scifi_material(color_name: String) -> void:
 			mat.emission = target_color
 			mat.emission_energy_multiplier = 0.0  # No glow
 			mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
-			print("[PLAYER] ✓ Applied color to ColorIdentifier")
+
 			return
 	
-	print("[PLAYER] ⚠ ColorIdentifier mesh not found!")
