@@ -14,10 +14,10 @@ extends StaticBody3D
 var visual_meshes: Array[MeshInstance3D] = []
 
 const NEON_COLORS = {
-	"Blue": Color(0.0, 1.0, 1.0),
-	"Green": Color(0.2, 1.0, 0.2),
+	"Blue": Color(0.0, 0.5, 1.0),
+	"Green": Color(0.2, 0.8, 0.2),
 	"Red": Color(1.0, 0.2, 0.2),
-	"Purple": Color(0.8, 0.2, 1.0),
+	"Purple": Color(0.6, 0.2, 0.8),
 	"Yellow": Color(1.0, 1.0, 0.0),
 	"Orange": Color(1.0, 0.6, 0.0),
 	"Gold": Color(1.0, 0.84, 0.0)
@@ -66,10 +66,10 @@ func update_visuals() -> void:
 		# Tint the texture with game color (less intense)
 		mat.albedo_color = Color(target_color.r, target_color.g, target_color.b, 1.0)
 		
-		# Subtle emission for outline glow
+		# No emission glow
 		mat.emission_enabled = true
 		mat.emission = target_color
-		mat.emission_energy_multiplier = 0.5  # Much lower for subtle glow
+		mat.emission_energy_multiplier = 0.0  # No glow
 		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
 	
 	print("[PLATFORM] Applied colored tech_pattern to ", visual_meshes.size(), " meshes")

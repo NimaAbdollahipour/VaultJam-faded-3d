@@ -10,10 +10,10 @@ extends RigidBody3D
 var visual_meshes: Array[MeshInstance3D] = []
 
 const NEON_COLORS = {
-	"Blue": Color(0.0, 1.0, 1.0),
-	"Green": Color(0.2, 1.0, 0.2),
+	"Blue": Color(0.0, 0.5, 1.0),
+	"Green": Color(0.2, 0.8, 0.2),
 	"Red": Color(1.0, 0.2, 0.2),
-	"Purple": Color(0.8, 0.2, 1.0),
+	"Purple": Color(0.6, 0.2, 0.8),
 	"Yellow": Color(1.0, 1.0, 0.0),
 	"Orange": Color(1.0, 0.6, 0.0),
 	"Gold": Color(1.0, 0.84, 0.0)
@@ -39,7 +39,7 @@ func update_visuals() -> void:
 	for vm in visual_meshes:
 		if vm.name == "ColorIdentifier":
 			print("[BOX] Found ColorIdentifier mesh!")
-			# Apply color with emission
+			# Apply color without emission
 			var mat: StandardMaterial3D
 			if vm.material_override and vm.material_override is StandardMaterial3D:
 				mat = vm.material_override
@@ -51,7 +51,7 @@ func update_visuals() -> void:
 			mat.albedo_color = target_color
 			mat.emission_enabled = true
 			mat.emission = target_color
-			mat.emission_energy_multiplier = 2.0
+			mat.emission_energy_multiplier = 0.0  # No glow
 			mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
 			print("[BOX] ✓ Applied color to ColorIdentifier")
 			return

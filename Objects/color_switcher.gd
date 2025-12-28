@@ -13,10 +13,10 @@ extends StaticBody3D
 @onready var light: OmniLight3D = $SpotHighlight if has_node("SpotHighlight") else null
 
 const NEON_COLORS = {
-	"Blue": Color(0.0, 1.0, 1.0),
-	"Green": Color(0.2, 1.0, 0.2),
+	"Blue": Color(0.0, 0.5, 1.0),
+	"Green": Color(0.2, 0.8, 0.2),
 	"Red": Color(1.0, 0.2, 0.2),
-	"Purple": Color(0.8, 0.2, 1.0),
+	"Purple": Color(0.6, 0.2, 0.8),
 	"Yellow": Color(1.0, 1.0, 0.0),
 	"Orange": Color(1.0, 0.6, 0.0),
 	"Gold": Color(1.0, 0.84, 0.0)
@@ -50,7 +50,7 @@ func update_visuals() -> void:
 		mat.albedo_color = target_color
 		mat.emission_enabled = true
 		mat.emission = target_color
-		mat.emission_energy_multiplier = 2.0
+		mat.emission_energy_multiplier = 0.0  # No glow
 		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
 		print("[COLOR_SWITCHER] ✓ Applied color to ColorIdentifier: ", target_color)
 	else:

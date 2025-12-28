@@ -25,14 +25,15 @@ const FADE_DELAY: float = 2.0  # 2 seconds before fading starts (faster)
 
 # Track collision time with matching-color objects
 var collision_timers: Dictionary = {}  # {object_id: time_colliding}
+var last_platform_match_state: bool = true  # Track if last frame was a match or not
 const NEON_COLORS = {
-	"Blue": Color(0.0, 1.0, 1.0),
-	"Green": Color(0.2, 1.0, 0.2),
-	"Red": Color(1.0, 0.2, 0.2),
-	"Purple": Color(0.8, 0.2, 1.0),
-	"Yellow": Color(1.0, 1.0, 0.0),
-	"Orange": Color(1.0, 0.6, 0.0),
-	"Gold": Color(1.0, 0.84, 0.0)
+	"Blue": Color(0.0, 0.5, 1.0),      # Normal blue
+	"Green": Color(0.2, 0.8, 0.2),     # Normal green
+	"Red": Color(1.0, 0.2, 0.2),       # Normal red
+	"Purple": Color(0.6, 0.2, 0.8),    # Normal purple
+	"Yellow": Color(1.0, 1.0, 0.0),    # Normal yellow
+	"Orange": Color(1.0, 0.6, 0.0),    # Normal orange
+	"Gold": Color(1.0, 0.84, 0.0)      # Normal gold
 }
 
 func _ready() -> void:
@@ -46,6 +47,27 @@ func _ready() -> void:
 	if not mesh and visual_meshes.size() > 0:
 		mesh = visual_meshes[0]
 	
+	print("[PLAYER] Found ", visual_meshes.size(), " visual meshes")
+	
+	# Initialize materials for fading on ALL meshes (not just ColorIdentifier)
+	for vm in visual_meshes:
+		if not vm.material_override:
+			var source_mat = vm.get_active_material(0)
+			var new_mat: BaseMaterial3D
+			
+			if source_mat is BaseMaterial3D:
+				new_mat = source_mat.duplicate()
+			else:
+				new_mat = StandardMaterial3D.new()
+			
+			new_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			# Ensure material starts at full opacity
+			var initial_color = new_mat.albedo_color
+			initial_color.a = 1.0
+			new_mat.albedo_color = initial_color
+			vm.material_override = new_mat
+	
+	# Apply color to ColorIdentifier mesh
 	update_scifi_material(player_color)
 
 func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
@@ -73,6 +95,11 @@ func _process(delta: float) -> void:
 	# REVERSED LOGIC: Player fades when NOT on matching platform or in air
 	if not is_on_matching_platform:
 		target_alpha = 0.0
+		if current_alpha > 0.1:  # Only print when noticeably fading
+			print("[PLAYER] FADING - Alpha: ", "%.2f" % current_alpha, " (not on matching platform or in air)")
+	else:
+		if current_alpha < 0.9:  # Only print when recovering
+			print("[PLAYER] STABLE - Alpha: ", "%.2f" % current_alpha, " (on matching platform)")
 	
 	var new_alpha = move_toward(current_alpha, target_alpha, fade_rate * delta)
 	
@@ -159,8 +186,10 @@ func _physics_process(delta: float) -> void:
 			var plat_fade_mode = collider.get("fade_mode") if "fade_mode" in collider else "When Standing"
 			
 			if collider.platform_color == player_color:
-				# MATCH: Track collision time
-				print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MATCH) - Mode: ", plat_fade_mode)
+				# MATCH: Track collision time, platform will fade
+				if not last_platform_match_state:
+					print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MATCH) - Mode: ", plat_fade_mode)
+					last_platform_match_state = true
 				currently_colliding.append(obj_id)
 				
 				# Both modes now use timer (2 seconds)
@@ -176,9 +205,10 @@ func _physics_process(delta: float) -> void:
 				
 				is_on_matching_platform = true
 			else:
-				# NO MATCH: Instant fade (mismatched color)
-				print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MISMATCH)")
-				collider.fade(delta)
+				# MISMATCH: Player fades (via is_on_matching_platform = false), platform stays solid
+				if last_platform_match_state:
+					print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MISMATCH) - Player will fade")
+					last_platform_match_state = false
 				
 		# Check for Box collision
 		if collider is RigidBody3D and "box_color" in collider:
@@ -241,9 +271,10 @@ func update_scifi_material(color_name: String) -> void:
 			
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mat.albedo_color = target_color
+			mat.roughness = 1.0  # Fully rough/matte finish
 			mat.emission_enabled = true
 			mat.emission = target_color
-			mat.emission_energy_multiplier = 3.0
+			mat.emission_energy_multiplier = 0.0  # No glow
 			mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
 			print("[PLAYER] ✓ Applied color to ColorIdentifier")
 			return
