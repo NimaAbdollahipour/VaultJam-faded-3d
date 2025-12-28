@@ -57,6 +57,11 @@ func _ready() -> void:
 				vm.material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 
 	axis_lock_linear_z = true
+	
+	# If the specific nodes aren't found, use the first visual mesh as the primary 'mesh'
+	if not mesh and visual_meshes.size() > 0:
+		mesh = visual_meshes[0]
+		
 	update_scifi_material(player_color)
 
 func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
@@ -213,39 +218,15 @@ func update_scifi_material(color_name: String) -> void:
 	
 	var target_color = NEON_COLORS.get(color_name, Color(color_name))
 	
-	# Load texture (Directly via load for Godot's built-in caching)
-	var texture_path = "res://assets/tech_pattern.jpg"
-	var tech_texture = null
-	
-	if FileAccess.file_exists(texture_path):
-		tech_texture = load(texture_path)
-		
-		# Fallback: Raw load if resource load failed
-		if not tech_texture:
-			var img = Image.new()
-			if img.load(texture_path) == OK:
-				tech_texture = ImageTexture.create_from_image(img)
-	else:
-		# Fallback to PNG name just in case local rename didn't sync 
-		var texture_path_alt = "res://assets/tech_pattern.png"
-		if FileAccess.file_exists(texture_path_alt):
-			tech_texture = load(texture_path_alt)
-	
 	# Sci-Fi / Metallic Settings
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.albedo_color = target_color
-	mat.albedo_texture = tech_texture
 	mat.metallic = 1.0
 	mat.metallic_specular = 1.0
 	mat.roughness = 0.2
-	
-	# UV Tiling for tech pattern
-	mat.uv1_triplanar = true
-	mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
 	
 	# Emission (Glowing) Settings
 	mat.emission_enabled = true
 	mat.emission = target_color
 	mat.emission_energy_multiplier = 2.0 # High intensity glow
-	mat.emission_texture = tech_texture
-	mat.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY # Use texture to mask emission
+	mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD # Use texture to mask emission

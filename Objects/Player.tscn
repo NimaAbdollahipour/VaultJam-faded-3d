@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://bl6nemac7vefj"]
+[gd_scene load_steps=5 format=3 uid="uid://bl6nemac7vefj"]
 
-[ext_resource type="ArrayMesh" uid="uid://cgqcmufb685pt" path="res://BeforeItFadesModels/PlayerBall.obj" id="1_8r7yd"]
 [ext_resource type="Script" uid="uid://dykf2lc050g7p" path="res://Objects/player.gd" id="1_n6db0"]
-
+[ext_resource type="PackedScene" uid="uid://02lxbyrikuik" path="res://assets/FinalModelsFaded/PlayerBall.glb" id="2_mesh"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_n6db0"]
 
@@ -14,15 +13,7 @@ script = ExtResource("1_n6db0")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_n6db0")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = ExtResource("1_8r7yd")
-
-[node name="Area3D" type="Area3D" parent="MeshInstance3D"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/Area3D"]
-shape = SubResource("SphereShape3D_yk4ok")
+[node name="PlayerBall" parent="." instance=ExtResource("2_mesh")]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.92538846, 0.37902012, 0, -0.37902012, 0.92538846, 0, 3.3274765, 6.9938602)
-
-

@@ -1,14 +1,16 @@
 @tool
-extends Node3D
+extends StaticBody3D
 
 @export_enum("Blue", "Green", "Red", "Purple", "Orange", "Gold") var switcher_color: String = "Blue":
 	set(value):
 		switcher_color = value
 		if is_node_ready():
-			update_scifi_material()
+			update_visuals()
 
-@onready var mesh: MeshInstance3D = $ColorIdentifier if has_node("ColorIdentifier") else $MeshInstance3D
+@export var highlight_intensity: float = 5.0
+
 @onready var area_3d: Area3D = $Area3D
+@onready var light: OmniLight3D = $SpotHighlight if has_node("SpotHighlight") else null
 
 const NEON_COLORS = {
 	"Blue": Color(0.0, 1.0, 1.0),
@@ -21,52 +23,27 @@ const NEON_COLORS = {
 }
 
 func _ready() -> void:
-	update_scifi_material()
+	update_visuals()
 	if not Engine.is_editor_hint():
 		if area_3d and not area_3d.body_entered.is_connected(_on_body_entered):
 			area_3d.body_entered.connect(_on_body_entered)
 
-func update_scifi_material() -> void:
-	if not mesh: return
-	
-	var mat: StandardMaterial3D
-	if mesh.material_override:
-		mat = mesh.material_override
-	else:
-		mat = StandardMaterial3D.new()
-		mesh.material_override = mat
-	
+func update_visuals() -> void:
 	var target_color = NEON_COLORS.get(switcher_color, Color(switcher_color))
-	target_color.a = 0.75 # 75% opacity
 	
-	# Load texture with fallback
-	var texture_path = "res://assets/tech_pattern.jpg"
-	var tech_texture = null
-	if FileAccess.file_exists(texture_path):
-		tech_texture = load(texture_path)
-		if not tech_texture:
-			var img = Image.new()
-			if img.load(texture_path) == OK:
-				tech_texture = ImageTexture.create_from_image(img)
+	# Instead of coloring the mesh, we use a light to "highlight" it like sunlight
+	if light:
+		light.light_color = target_color
+		light.light_energy = highlight_intensity
+	
+	# Clear any material overrides to show the model's natural texture colors
+	_clear_overrides_recursive(self)
 
-	# Sci-Fi Settings
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = target_color
-	mat.albedo_texture = tech_texture
-	mat.metallic = 1.0
-	mat.metallic_specular = 1.0
-	mat.roughness = 0.2
-	
-	# UV Tiling for tech pattern
-	mat.uv1_triplanar = true
-	mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
-	
-	# Emission Settings
-	mat.emission_enabled = true
-	mat.emission = target_color
-	mat.emission_energy_multiplier = 2.0
-	mat.emission_texture = tech_texture
-	mat.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+func _clear_overrides_recursive(node: Node) -> void:
+	if node is MeshInstance3D:
+		node.material_override = null
+	for child in node.get_children():
+		_clear_overrides_recursive(child)
 
 func _on_body_entered(body: Node3D) -> void:
 	if body.has_method("change_color"):

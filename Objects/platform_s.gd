@@ -38,42 +38,18 @@ func update_scifi_material() -> void:
 	
 	var target_color = NEON_COLORS.get(platform_color, Color(platform_color))
 	
-	# Load texture (Directly via load for Godot's built-in caching)
-	var texture_path = "res://assets/tech_pattern.jpg"
-	var tech_texture = null
-	
-	if FileAccess.file_exists(texture_path):
-		tech_texture = load(texture_path)
-		
-		# Fallback: Raw load if resource load failed
-		if not tech_texture:
-			var img = Image.new()
-			if img.load(texture_path) == OK:
-				tech_texture = ImageTexture.create_from_image(img)
-	else:
-		# Fallback to PNG name just in case local rename didn't sync 
-		var texture_path_alt = "res://assets/tech_pattern.png"
-		if FileAccess.file_exists(texture_path_alt):
-			tech_texture = load(texture_path_alt)
-	
 	# Sci-Fi / Metallic Settings
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.albedo_color = target_color
-	mat.albedo_texture = tech_texture
 	mat.metallic = 1.0
 	mat.metallic_specular = 1.0
 	mat.roughness = 0.2
-	
-	# UV Tiling for tech pattern
-	mat.uv1_triplanar = true
-	mat.uv1_scale = Vector3(0.5, 0.5, 0.5) # Adjust scale for detail density
 	
 	# Emission (Glowing) Settings
 	mat.emission_enabled = true
 	mat.emission = target_color
 	mat.emission_energy_multiplier = 2.0 # High intensity glow
-	mat.emission_texture = tech_texture
-	mat.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+	mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD # Full solid glow additive
 
 func fade(delta: float) -> void:
 	if not mesh: return

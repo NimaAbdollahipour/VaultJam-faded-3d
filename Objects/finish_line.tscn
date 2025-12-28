@@ -1,28 +1,27 @@
 [gd_scene load_steps=5 format=3 uid="uid://blep42bxnl3pp"]
 
-[ext_resource type="ArrayMesh" uid="uid://b2gmfhhyv6tt" path="res://BeforeItFadesModels/FinishLine.obj" id="1_0kwxv"]
-[ext_resource type="Script" uid="uid://b6pcygqkxb4to" path="res://Objects/finish_line.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://b6pcygqkxb4to" path="res://Objects/finish_line.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://4hp8fdrjs886" path="res://Objects/Portal.glb" id="2_portal"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_vmc12"]
-size = Vector3(3.9942627, 4.022339, 0.6491699)
+[sub_resource type="BoxShape3D" id="BoxShape3D_static"]
+size = Vector3(5, 5, 0.5)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_01byl"]
-size = Vector3(3.9940186, 3.5135498, 2.1452332)
+[sub_resource type="BoxShape3D" id="BoxShape3D_trigger"]
+size = Vector3(4, 4, 1.5)
 
 [node name="FinishLine" type="StaticBody3D"]
-script = ExtResource("2_script")
+transform = Transform3D(0.72, 0, 0, 0, 0.72, 0, 0, 0, 0.72, 0, 0, 0)
+script = ExtResource("1_script")
+
+[node name="PortalModel" parent="." instance=ExtResource("2_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08300781, -0.06802368, 0.13574219)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.46331784, 1.9901733, -0.22591144)
-shape = SubResource("BoxShape3D_vmc12")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.22821045, 0, -0.23280844)
-mesh = ExtResource("1_0kwxv")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -0.6)
+shape = SubResource("BoxShape3D_static")
 
 [node name="Area3D" type="Area3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.22821045, 0, -0.23280844)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0068969727, 1.7366768, 0.05644226)
-shape = SubResource("BoxShape3D_01byl")
+shape = SubResource("BoxShape3D_trigger")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cd7nwnenk0ao3"]
+[gd_scene load_steps=12 format=3 uid="uid://cd7nwnenk0ao3"]
 
 [ext_resource type="PackedScene" uid="uid://bl6nemac7vefj" path="res://Objects/Player.tscn" id="1_vn7o3"]
 [ext_resource type="PackedScene" uid="uid://cuw5ooqhyl0vo" path="res://Objects/box.tscn" id="2_bt44k"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="ui_123"]
 [ext_resource type="PackedScene" uid="uid://dpgggk15w3t7s" path="res://UI/GameBackground.tscn" id="bg_123"]
 [ext_resource type="Environment" uid="uid://cdvytmlb28p24" path="res://transparent_environment.tres" id="env_123"]
+[ext_resource type="PackedScene" uid="uid://bqjcxyut4poin" path="res://Objects/color_switcher.tscn" id="6_l53as"]
 
 [node name="Level_2" type="Node3D"]
 
@@ -42,6 +43,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 
 [node name="PlatformS6" parent="." instance=ExtResource("5_btoec")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -2, 0)
+
+[node name="ColorSwitcher" parent="." instance=ExtResource("6_l53as")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 12, -1, 0)
+switcher_color = "Green"
 
 [node name="GameUI" parent="." instance=ExtResource("ui_123")]
 
