@@ -73,15 +73,12 @@ func update_visuals() -> void:
 		light.light_color = target_color
 		light.light_energy = highlight_intensity
 	
-	# Color the ColorIdentifier mesh
+	# Color the ColorIdentifier mesh (ensure instance-specific material)
 	var color_id = get_node_or_null("ColorIdentifier")
 	if color_id and color_id is MeshInstance3D:
-		var mat: StandardMaterial3D
-		if color_id.material_override and color_id.material_override is StandardMaterial3D:
-			mat = color_id.material_override
-		else:
-			mat = StandardMaterial3D.new()
-			color_id.material_override = mat
+		# Always create a new material instance to avoid sharing between color switchers
+		var mat: StandardMaterial3D = StandardMaterial3D.new()
+		color_id.material_override = mat
 		
 		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		mat.albedo_color = target_color
@@ -89,8 +86,6 @@ func update_visuals() -> void:
 		mat.emission = target_color
 		mat.emission_energy_multiplier = 0.0  # No glow
 		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
-
-
 	
 	# Clear overrides on the GLB model to preserve original textures
 	var glb_model = get_node_or_null("ColorChanger")

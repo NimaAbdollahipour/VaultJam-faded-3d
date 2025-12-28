@@ -58,7 +58,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12.034527, 0)
 fade_rate = 0.33
 
 [node name="PlatformS9" parent="." instance=ExtResource("5_btoec")]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 35, 11.13796, 0)
+transform = Transform3D(-1.726887e-08, 1, 0, -0.39506572, -4.371139e-08, 0, 0, 0, 1, 35, 8.13796, 0)
 fade_rate = 0.33
 
 [node name="RigidBody3D" parent="." instance=ExtResource("2_bt44k")]
@@ -69,7 +69,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.677032, -1, 0)
 
 [node name="ColorSwitcher" parent="." instance=ExtResource("6_l53as")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, -1, 0)
-switcher_color = "Red"
 
 [node name="ColorSwitcher2" parent="." instance=ExtResource("6_l53as")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 31.406773, 5.0716505, 0)
