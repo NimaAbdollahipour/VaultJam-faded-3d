@@ -233,6 +233,10 @@ func update_scifi_material(color_name: String) -> void:
 	mat.metallic_specular = 1.0
 	mat.roughness = 0.2
 	
+	# UV Tiling for tech pattern
+	mat.uv1_triplanar = true
+	mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
+	
 	# Emission (Glowing) Settings
 	mat.emission_enabled = true
 	mat.emission = target_color
