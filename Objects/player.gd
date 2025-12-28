@@ -65,23 +65,27 @@ func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 			list.append(child)
 		_find_meshes_recursive(child, list)
 
+var is_on_matching_platform: bool = false
+
 func _process(delta: float) -> void:
-	# Handle Fading for ALL visual meshes
-	var current_alpha = 1.0
+	# Get current alpha from the main mesh tracking variable
+	# We'll use the material of the first visual mesh to keep them in sync
+	var first_mat = null
+	if visual_meshes.size() > 0:
+		first_mat = visual_meshes[0].material_override
 	
-	# We use the main color identifier mesh to track state if possible
-	if mesh and mesh.material_override:
-		current_alpha = mesh.material_override.albedo_color.a
-	elif visual_meshes.size() > 0 and visual_meshes[0].material_override:
-		# Fallback if specific identifier missing
-		current_alpha = visual_meshes[0].material_override.albedo_color.a
+	if not first_mat: return
 	
-	var target_alpha = 0.0
-	if is_safe:
-		target_alpha = 1.0
+	var current_alpha = first_mat.albedo_color.a
+	var target_alpha = 1.0
+	
+	# NEW LOGIC: Player fades if they ARE on a matching platform
+	if is_on_matching_platform:
+		target_alpha = 0.0
 	
 	var new_alpha = move_toward(current_alpha, target_alpha, fade_rate * delta)
 	
+	# Apply to ALL visual meshes
 	for vm in visual_meshes:
 		var mat = vm.material_override
 		if mat:
@@ -92,9 +96,9 @@ func _process(delta: float) -> void:
 			if mat.emission_enabled:
 				mat.emission_energy_multiplier = new_alpha * 2.0
 	
-	# Check for Game Over (Fade out) using new_alpha
+	# Game Over if player fades out completely
 	if new_alpha <= 0.0:
-		print("Game Over")
+		print("Game Over: Player Faded")
 		get_tree().call_group("GameManager", "game_over")
 		if has_node("/root/AudioManager"):
 			get_node("/root/AudioManager").play_sfx("lose")
@@ -150,14 +154,19 @@ func _physics_process(delta: float) -> void:
 		set_process(false)
 		set_physics_process(false)
 	
-	is_safe = false
+	# Platform Interaction Logic
+	is_on_matching_platform = false # Reset state
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
-		# Check if the collider is a platform with matching color
+		
+		# Check if the collider is a platform
 		if collider.has_method("fade") and "platform_color" in collider:
 			if collider.platform_color == player_color:
-				is_safe = true
+				# MATCH: Player starts fading, platform is stable
+				is_on_matching_platform = true
+			else:
+				# NO MATCH: Platform fades away
 				collider.fade(delta)
 				
 		# Check for Box Pushing
@@ -176,6 +185,16 @@ func _physics_process(delta: float) -> void:
 # Called by ColorSwitcher
 func change_color(new_color: String) -> void:
 	player_color = new_color
+	
+	# Reset Player Alpha immediately on color change
+	for vm in visual_meshes:
+		if vm.material_override:
+			var col = vm.material_override.albedo_color
+			col.a = 1.0
+			vm.material_override.albedo_color = col
+			if vm.material_override.emission_enabled:
+				vm.material_override.emission_energy_multiplier = 2.0
+	
 	update_scifi_material(new_color)
 	
 	if has_node("/root/AudioManager"):

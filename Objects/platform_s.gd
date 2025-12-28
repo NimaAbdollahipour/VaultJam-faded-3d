@@ -7,7 +7,7 @@ extends StaticBody3D
 		if is_node_ready():
 			update_scifi_material()
 
-@export var fade_rate: float = 0.5
+@export var fade_rate: float = 0.33 # Slower fading (takes ~3 seconds)
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D
 
