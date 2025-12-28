@@ -7,7 +7,8 @@ extends StaticBody3D
 		if is_node_ready():
 			update_visuals()
 
-@export var fade_rate: float = 0.33
+@export_enum("When Standing", "Always") var fade_mode: String = "When Standing"
+@export var fade_rate: float = 1.0
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D if has_node("MeshInstance3D") else null
 var visual_meshes: Array[MeshInstance3D] = []
@@ -23,6 +24,13 @@ const NEON_COLORS = {
 }
 
 func _ready() -> void:
+	# Check for global fade mode setting from menu
+	if get_tree() and get_tree().root.has_meta("platforms_always_fade"):
+		var always_fade = get_tree().root.get_meta("platforms_always_fade")
+		if always_fade:
+			fade_mode = "Always"
+			print("[PLATFORM] Global fade mode applied: Always")
+	
 	visual_meshes.clear()
 	_find_meshes_recursive(self, visual_meshes)
 	update_visuals()
@@ -34,8 +42,44 @@ func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 		_find_meshes_recursive(child, list)
 
 func update_visuals() -> void:
-	# Do nothing - preserve original materials completely
-	pass
+	# Apply game color with tech_pattern texture
+	var target_color = NEON_COLORS.get(platform_color, Color(platform_color))
+	print("[PLATFORM] Updating platform color to: ", platform_color, " -> ", target_color)
+	
+	# Load tech_pattern texture
+	var tech_texture: Texture2D = null
+	if FileAccess.file_exists("res://assets/tech_pattern.jpg"):
+		tech_texture = load("res://assets/tech_pattern.jpg")
+	elif FileAccess.file_exists("res://assets/tech_pattern.png"):
+		tech_texture = load("res://assets/tech_pattern.png")
+	
+	for vm in visual_meshes:
+		# Apply color with tech_pattern texture
+		var mat: StandardMaterial3D
+		if vm.material_override and vm.material_override is StandardMaterial3D:
+			mat = vm.material_override
+		else:
+			mat = StandardMaterial3D.new()
+			vm.material_override = mat
+		
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		
+		# Apply tech_pattern texture if available
+		if tech_texture:
+			mat.albedo_texture = tech_texture
+			mat.uv1_triplanar = true
+			mat.uv1_scale = Vector3(0.5, 0.5, 0.5)
+		
+		# Tint the texture with game color (less intense)
+		mat.albedo_color = Color(target_color.r, target_color.g, target_color.b, 1.0)
+		
+		# Subtle emission for outline glow
+		mat.emission_enabled = true
+		mat.emission = target_color
+		mat.emission_energy_multiplier = 0.5  # Much lower for subtle glow
+		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
+	
+	print("[PLATFORM] Applied colored tech_pattern to ", visual_meshes.size(), " meshes")
 
 func fade(delta: float) -> void:
 	var fully_faded = true

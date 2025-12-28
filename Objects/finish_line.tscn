@@ -14,14 +14,14 @@ transform = Transform3D(0.72, 0, 0, 0, 0.72, 0, 0, 0, 0.72, 0, 0, 0)
 script = ExtResource("1_script")
 
 [node name="PortalModel" parent="." instance=ExtResource("2_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08300781, -0.06802368, 0.13574219)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.31816405, -0.06802372, -0.21009117)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -0.6)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.41757816, 2, -0.12708332)
 shape = SubResource("BoxShape3D_static")
 
 [node name="Area3D" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.18242188, 2, -0.12708335)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("BoxShape3D_trigger")

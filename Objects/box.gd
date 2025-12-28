@@ -57,3 +57,22 @@ func update_visuals() -> void:
 			return
 	
 	print("[BOX] ⚠ ColorIdentifier mesh not found!")
+
+func start_fading(delta: float) -> void:
+	# Fade all meshes including ColorIdentifier
+	var fully_faded = true
+	
+	for vm in visual_meshes:
+		if vm.material_override:
+			var color = vm.material_override.albedo_color
+			color.a = move_toward(color.a, 0.0, 0.5 * delta)  # Fade rate
+			vm.material_override.albedo_color = color
+			
+			if vm.material_override.emission_enabled:
+				vm.material_override.emission_energy_multiplier = color.a * 2.0
+				
+			if color.a > 0.0:
+				fully_faded = false
+	
+	if fully_faded:
+		queue_free()

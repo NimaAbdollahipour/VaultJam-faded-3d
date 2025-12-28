@@ -7,7 +7,7 @@ extends CharacterBody3D
 		if is_node_ready():
 			update_scifi_material(value)
 
-@export var fade_rate: float = 0.1
+@export var fade_rate: float = 0.5
 @export var push_force: float = 5.0
 
 const SPEED = 5.0
@@ -21,6 +21,10 @@ var is_safe: bool = false
 var was_on_floor: bool = false
 var push_cooldown: float = 0.0
 const PUSH_INTERVAL: float = 0.5
+const FADE_DELAY: float = 3.0  # 3 seconds before fading starts
+
+# Track collision time with matching-color objects
+var collision_timers: Dictionary = {}  # {object_id: time_colliding}
 const NEON_COLORS = {
 	"Blue": Color(0.0, 1.0, 1.0),
 	"Green": Color(0.2, 1.0, 0.2),
@@ -66,8 +70,8 @@ func _process(delta: float) -> void:
 	var current_alpha = first_mat.albedo_color.a
 	var target_alpha = 1.0
 	
-	# NEW LOGIC: Player fades if they ARE on a matching platform
-	if is_on_matching_platform:
+	# REVERSED LOGIC: Player fades when NOT on matching platform or in air
+	if not is_on_matching_platform:
 		target_alpha = 0.0
 	
 	var new_alpha = move_toward(current_alpha, target_alpha, fade_rate * delta)
@@ -141,24 +145,66 @@ func _physics_process(delta: float) -> void:
 		set_process(false)
 		set_physics_process(false)
 	
-	# Platform Interaction Logic
+	# Platform and Box Interaction Logic
 	is_on_matching_platform = false # Reset state
+	var currently_colliding: Array = []  # Track objects we're currently touching
+	
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
+		var obj_id = collider.get_instance_id()
 		
 		# Check if the collider is a platform
 		if collider.has_method("fade") and "platform_color" in collider:
+			var plat_fade_mode = collider.get("fade_mode") if "fade_mode" in collider else "When Standing"
+			
 			if collider.platform_color == player_color:
-				# MATCH: Player starts fading, platform is stable
+				# MATCH: Track collision time
+				print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MATCH) - Mode: ", plat_fade_mode)
+				currently_colliding.append(obj_id)
+				
+				# Check fade mode
+				if plat_fade_mode == "Always":
+					# Always mode: fade immediately without timer
+					collider.fade(delta)
+					print("[PLAYER] Fading platform (Always mode)")
+				else:
+					# When Standing mode: use timer
+					if not collision_timers.has(obj_id):
+						collision_timers[obj_id] = 0.0
+					
+					collision_timers[obj_id] += delta
+					
+					# Start fading after 3 seconds of continuous collision
+					if collision_timers[obj_id] >= FADE_DELAY:
+						collider.fade(delta)
+						print("[PLAYER] Fading platform (", collision_timers[obj_id], "s)")
+				
 				is_on_matching_platform = true
 			else:
-				# NO MATCH: Platform fades away
+				# NO MATCH: Instant fade (mismatched color)
+				print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MISMATCH)")
 				collider.fade(delta)
 				
-		# Check for Box Pushing
+		# Check for Box collision
 		if collider is RigidBody3D and "box_color" in collider:
 			if collider.box_color == player_color:
+				# MATCH: Track collision time
+				print("[COLLISION] Player: ", player_color, " touching Box: ", collider.box_color, " (MATCH)")
+				currently_colliding.append(obj_id)
+				
+				if not collision_timers.has(obj_id):
+					collision_timers[obj_id] = 0.0
+				
+				collision_timers[obj_id] += delta
+				
+				# Start fading after 3 seconds AND apply push force
+				if collision_timers[obj_id] >= FADE_DELAY:
+					if collider.has_method("start_fading"):
+						collider.start_fading(delta)
+					print("[PLAYER] Fading box (", collision_timers[obj_id], "s)")
+				
+				# Push physics (always happens regardless of fading)
 				var push_dir = -collision.get_normal()
 				push_dir.y = 0
 				push_dir = push_dir.normalized()
@@ -168,6 +214,14 @@ func _physics_process(delta: float) -> void:
 					if has_node("/root/AudioManager"):
 						get_node("/root/AudioManager").play_sfx("push")
 					push_cooldown = PUSH_INTERVAL
+	
+	# Clear timers for objects we're no longer touching
+	var to_remove = []
+	for obj_id in collision_timers.keys():
+		if not obj_id in currently_colliding:
+			to_remove.append(obj_id)
+	for obj_id in to_remove:
+		collision_timers.erase(obj_id)
 
 # Called by ColorSwitcher
 func change_color(new_color: String) -> void:
