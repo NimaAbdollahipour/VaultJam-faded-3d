@@ -1,16 +1,19 @@
 [gd_scene load_steps=5 format=3 uid="uid://bqjcxyut4poin"]
 
 [ext_resource type="Script" uid="uid://dmhuyqwrd00et" path="res://Objects/color_switcher.gd" id="1_3h31j"]
-[ext_resource type="PackedScene" uid="uid://6pjes68v5siy" path="res://assets/FinalModelsFaded/ColorChanger.glb" id="2_glb"]
+[ext_resource type="PackedScene" uid="uid://dwkct468pcpyr" path="res://Objects/ColorChanger.glb" id="2_glb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_thin"]
 size = Vector3(3.6096191, 0.2, 3.4135132)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3h31j"]
 
 [node name="ColorSwitcher" type="StaticBody3D"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 script = ExtResource("1_3h31j")
 
 [node name="ColorChanger" parent="." instance=ExtResource("2_glb")]
+transform = Transform3D(0.8091292, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.006225587, 0, -0.0184021)
@@ -27,3 +30,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.49283, 0)
 light_color = Color(0, 1, 1, 1)
 light_energy = 5.0
 omni_range = 10.0
+
+[node name="ColorIdentifier" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.5, 0, 0, 0, 1.6, 0, 0, 0, 2.5, 0, 1.7198343, 0)
+mesh = SubResource("CylinderMesh_3h31j")

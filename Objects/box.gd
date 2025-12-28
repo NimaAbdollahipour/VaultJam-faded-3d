@@ -5,7 +5,7 @@ extends RigidBody3D
 	set(value):
 		box_color = value
 		if is_node_ready():
-			update_scifi_material()
+			update_visuals()
 
 var visual_meshes: Array[MeshInstance3D] = []
 
@@ -22,7 +22,8 @@ const NEON_COLORS = {
 func _ready() -> void:
 	visual_meshes.clear()
 	_find_meshes_recursive(self, visual_meshes)
-	update_scifi_material()
+	print("[BOX] Found ", visual_meshes.size(), " visual meshes")
+	update_visuals()
 
 func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 	for child in node.get_children():
@@ -30,26 +31,29 @@ func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 			list.append(child)
 		_find_meshes_recursive(child, list)
 
-func update_scifi_material() -> void:
+func update_visuals() -> void:
+	# Apply game color to ColorIdentifier mesh
 	var target_color = NEON_COLORS.get(box_color, Color(box_color))
+	print("[BOX] Updating ColorIdentifier to color: ", box_color, " -> ", target_color)
 	
 	for vm in visual_meshes:
-		var mat: StandardMaterial3D
-		if vm.material_override:
-			mat = vm.material_override
-		else:
-			mat = StandardMaterial3D.new()
-			vm.material_override = mat
-		
-		# Sci-Fi / Metallic Settings
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		mat.albedo_color = target_color
-		mat.metallic = 1.0
-		mat.metallic_specular = 1.0
-		mat.roughness = 0.2
-		
-		# Emission Settings
-		mat.emission_enabled = true
-		mat.emission = target_color
-		mat.emission_energy_multiplier = 2.0
-		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
+		if vm.name == "ColorIdentifier":
+			print("[BOX] Found ColorIdentifier mesh!")
+			# Apply color with emission
+			var mat: StandardMaterial3D
+			if vm.material_override and vm.material_override is StandardMaterial3D:
+				mat = vm.material_override
+			else:
+				mat = StandardMaterial3D.new()
+				vm.material_override = mat
+			
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.albedo_color = target_color
+			mat.emission_enabled = true
+			mat.emission = target_color
+			mat.emission_energy_multiplier = 2.0
+			mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
+			print("[BOX] ✓ Applied color to ColorIdentifier")
+			return
+	
+	print("[BOX] ⚠ ColorIdentifier mesh not found!")

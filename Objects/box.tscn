@@ -1,20 +1,22 @@
-[gd_scene load_steps=5 format=3 uid="uid://cuw5ooqhyl0vo"]
+[gd_scene load_steps=6 format=3 uid="uid://cuw5ooqhyl0vo"]
 
 [ext_resource type="Script" uid="uid://ckrehlt2hvknq" path="res://Objects/box.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://c13nq4jsyq6gt" path="res://assets/FinalModelsFaded/Box.glb" id="2_mesh"]
+[ext_resource type="PackedScene" uid="uid://le3g2elhj3io" path="res://Objects/Box.glb" id="2_mesh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_eic30"]
-size = Vector3(1.9832764, 1.9721069, 1.9938965)
+size = Vector3(1.9832764, 2.7171478, 2.361267)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_iy76c"]
-size = Vector3(2.137146, 2.153885, 2.1444702)
+size = Vector3(2.137146, 3.0853367, 2.6934776)
+
+[sub_resource type="BoxMesh" id="BoxMesh_eic30"]
 
 [node name="RigidBody3D" type="RigidBody3D"]
 mass = 0.2
 script = ExtResource("1_script")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.1035156e-05, -0.0027770996, 0.0032958984)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.1035156e-05, 1.4131883, 0.007171631)
 shape = SubResource("BoxShape3D_eic30")
 
 [node name="BoxModel" parent="." instance=ExtResource("2_mesh")]
@@ -22,5 +24,9 @@ shape = SubResource("BoxShape3D_eic30")
 [node name="Area3D" type="Area3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002105713, -6.866455e-05, -9.1552734e-05)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002105713, 1.4071624, -0.004678726)
 shape = SubResource("BoxShape3D_iy76c")
+
+[node name="ColorIdentifier" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.8852562, 0, 0, 0, 2.0058117, 0, 0, 0, 1.8419855, 0, 1.389735, 0)
+mesh = SubResource("BoxMesh_eic30")

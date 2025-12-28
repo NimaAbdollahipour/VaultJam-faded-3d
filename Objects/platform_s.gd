@@ -5,11 +5,12 @@ extends StaticBody3D
 	set(value):
 		platform_color = value
 		if is_node_ready():
-			update_scifi_material()
+			update_visuals()
 
-@export var fade_rate: float = 0.33 # Slower fading (takes ~3 seconds)
+@export var fade_rate: float = 0.33
 
-@onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var mesh: MeshInstance3D = $MeshInstance3D if has_node("MeshInstance3D") else null
+var visual_meshes: Array[MeshInstance3D] = []
 
 const NEON_COLORS = {
 	"Blue": Color(0.0, 1.0, 1.0),
@@ -22,46 +23,34 @@ const NEON_COLORS = {
 }
 
 func _ready() -> void:
-	if mesh:
-		mesh.visible = true
-	update_scifi_material()
+	visual_meshes.clear()
+	_find_meshes_recursive(self, visual_meshes)
+	update_visuals()
 
-func update_scifi_material() -> void:
-	if not mesh: return
-	
-	var mat: StandardMaterial3D
-	if mesh.material_override:
-		mat = mesh.material_override
-	else:
-		mat = StandardMaterial3D.new()
-		mesh.material_override = mat
-	
-	var target_color = NEON_COLORS.get(platform_color, Color(platform_color))
-	
-	# Sci-Fi / Metallic Settings
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = target_color
-	mat.metallic = 1.0
-	mat.metallic_specular = 1.0
-	mat.roughness = 0.2
-	
-	# Emission (Glowing) Settings
-	mat.emission_enabled = true
-	mat.emission = target_color
-	mat.emission_energy_multiplier = 2.0 # High intensity glow
-	mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD # Full solid glow additive
+func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			list.append(child)
+		_find_meshes_recursive(child, list)
+
+func update_visuals() -> void:
+	# Do nothing - preserve original materials completely
+	pass
 
 func fade(delta: float) -> void:
-	if not mesh: return
+	var fully_faded = true
 	
-	if mesh.material_override:
-		var color = mesh.material_override.albedo_color
-		color.a = move_toward(color.a, 0.0, fade_rate * delta)
-		mesh.material_override.albedo_color = color
-		
-		# Fade emission
-		if mesh.material_override.emission_enabled:
-			mesh.material_override.emission_energy_multiplier = color.a * 2.0
-		
-		if color.a <= 0.0:
-			queue_free()
+	for vm in visual_meshes:
+		if vm.material_override:
+			var color = vm.material_override.albedo_color
+			color.a = move_toward(color.a, 0.0, fade_rate * delta)
+			vm.material_override.albedo_color = color
+			
+			if vm.material_override.emission_enabled:
+				vm.material_override.emission_energy_multiplier = color.a
+				
+			if color.a > 0.0:
+				fully_faded = false
+	
+	if fully_faded:
+		queue_free()

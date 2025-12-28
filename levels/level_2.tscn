@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cd7nwnenk0ao3"]
+[gd_scene load_steps=11 format=3 uid="uid://cd7nwnenk0ao3"]
 
 [ext_resource type="PackedScene" uid="uid://bl6nemac7vefj" path="res://Objects/Player.tscn" id="1_vn7o3"]
 [ext_resource type="PackedScene" uid="uid://cuw5ooqhyl0vo" path="res://Objects/box.tscn" id="2_bt44k"]
@@ -6,21 +6,22 @@
 [ext_resource type="PackedScene" uid="uid://ckvhisiojo471" path="res://Objects/platform_m.tscn" id="5_btoec"]
 [ext_resource type="PackedScene" uid="uid://dye0um56o6jky" path="res://Objects/platform_l.tscn" id="5_gwceb"]
 [ext_resource type="PackedScene" uid="uid://blep42bxnl3pp" path="res://Objects/finish_line.tscn" id="5_n46q3"]
-[ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="ui_123"]
-[ext_resource type="PackedScene" uid="uid://dpgggk15w3t7s" path="res://UI/GameBackground.tscn" id="bg_123"]
-[ext_resource type="Environment" uid="uid://cdvytmlb28p24" path="res://transparent_environment.tres" id="env_123"]
 [ext_resource type="PackedScene" uid="uid://bqjcxyut4poin" path="res://Objects/color_switcher.tscn" id="6_l53as"]
+[ext_resource type="PackedScene" path="res://UI/GameBackground.tscn" id="bg_123"]
+[ext_resource type="Environment" path="res://transparent_environment.tres" id="env_123"]
+[ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="ui_123"]
 
 [node name="Level_2" type="Node3D"]
 
 [node name="Player" parent="." instance=ExtResource("1_vn7o3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -0.50834405, 0)
+axis_lock_linear_z = true
 
 [node name="FinishLine" parent="." instance=ExtResource("5_n46q3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67, -1, 0)
 
 [node name="RigidBody3D" parent="." instance=ExtResource("2_bt44k")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
-mass = 0.2
 box_color = "Orange"
 
 [node name="PlatformS5" parent="." instance=ExtResource("2_jirdo")]

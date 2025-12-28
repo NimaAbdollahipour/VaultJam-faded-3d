@@ -31,13 +31,35 @@ func _ready() -> void:
 func update_visuals() -> void:
 	var target_color = NEON_COLORS.get(switcher_color, Color(switcher_color))
 	
-	# Instead of coloring the mesh, we use a light to "highlight" it like sunlight
+	# Update the light highlight
 	if light:
 		light.light_color = target_color
 		light.light_energy = highlight_intensity
 	
-	# Clear any material overrides to show the model's natural texture colors
-	_clear_overrides_recursive(self)
+	# Color the ColorIdentifier mesh
+	var color_id = get_node_or_null("ColorIdentifier")
+	if color_id and color_id is MeshInstance3D:
+		var mat: StandardMaterial3D
+		if color_id.material_override and color_id.material_override is StandardMaterial3D:
+			mat = color_id.material_override
+		else:
+			mat = StandardMaterial3D.new()
+			color_id.material_override = mat
+		
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_color = target_color
+		mat.emission_enabled = true
+		mat.emission = target_color
+		mat.emission_energy_multiplier = 2.0
+		mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
+		print("[COLOR_SWITCHER] ✓ Applied color to ColorIdentifier: ", target_color)
+	else:
+		print("[COLOR_SWITCHER] ⚠ ColorIdentifier mesh not found!")
+	
+	# Clear overrides on the GLB model to preserve original textures
+	var glb_model = get_node_or_null("ColorChanger")
+	if glb_model:
+		_clear_overrides_recursive(glb_model)
 
 func _clear_overrides_recursive(node: Node) -> void:
 	if node is MeshInstance3D:

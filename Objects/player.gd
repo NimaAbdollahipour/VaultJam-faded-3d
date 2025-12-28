@@ -14,7 +14,7 @@ const SPEED = 5.0
 const JUMP_VELOCITY = 9
 const BALL_RADIUS = 0.5
 
-@onready var mesh: MeshInstance3D = $ColorIdentifier if has_node("ColorIdentifier") else $MeshInstance3D
+var mesh: MeshInstance3D  # Set in _ready() from found meshes
 var visual_meshes: Array[MeshInstance3D] = []
 
 var is_safe: bool = false
@@ -35,39 +35,21 @@ func _ready() -> void:
 	# Gather all visual meshes recursively (in case of imported scenes)
 	visual_meshes.clear()
 	_find_meshes_recursive(self, visual_meshes)
-	
-	# Prepare all meshes for fading
-	for vm in visual_meshes:
-		# Ensure every mesh has a material override we can fade
-		if not vm.material_override:
-			var source_mat = vm.get_active_material(0)
-			var new_mat: StandardMaterial3D
-			
-			if source_mat is StandardMaterial3D:
-				new_mat = source_mat.duplicate()
-			else:
-				new_mat = StandardMaterial3D.new()
-				if source_mat and "albedo_color" in source_mat:
-					new_mat.albedo_color = source_mat.albedo_color
-			
-			new_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			vm.material_override = new_mat
-		else:
-			if vm.material_override.transparency != BaseMaterial3D.TRANSPARENCY_ALPHA:
-				vm.material_override.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 
 	axis_lock_linear_z = true
 	
 	# If the specific nodes aren't found, use the first visual mesh as the primary 'mesh'
 	if not mesh and visual_meshes.size() > 0:
 		mesh = visual_meshes[0]
-		
+	
 	update_scifi_material(player_color)
 
 func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 	for child in node.get_children():
 		if child is MeshInstance3D:
 			list.append(child)
+			print("[PLAYER] Found MeshInstance3D: ", child.name)
+		# Always recurse into children to find nested meshes
 		_find_meshes_recursive(child, list)
 
 var is_on_matching_platform: bool = false
@@ -206,27 +188,28 @@ func change_color(new_color: String) -> void:
 		get_node("/root/AudioManager").play_sfx("change_color")
 
 func update_scifi_material(color_name: String) -> void:
-	if not mesh: return
-
-	# Create or reuse material
-	var mat: StandardMaterial3D
-	if mesh.material_override:
-		mat = mesh.material_override
-	else:
-		mat = StandardMaterial3D.new()
-		mesh.material_override = mat
-	
+	# Apply game color to ColorIdentifier mesh
 	var target_color = NEON_COLORS.get(color_name, Color(color_name))
+	print("[PLAYER] Updating ColorIdentifier to color: ", color_name, " -> ", target_color)
 	
-	# Sci-Fi / Metallic Settings
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = target_color
-	mat.metallic = 1.0
-	mat.metallic_specular = 1.0
-	mat.roughness = 0.2
+	for vm in visual_meshes:
+		if vm.name == "ColorIdentifier":
+			print("[PLAYER] Found ColorIdentifier mesh!")
+			# Apply color with emission
+			var mat: StandardMaterial3D
+			if vm.material_override and vm.material_override is StandardMaterial3D:
+				mat = vm.material_override
+			else:
+				mat = StandardMaterial3D.new()
+				vm.material_override = mat
+			
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.albedo_color = target_color
+			mat.emission_enabled = true
+			mat.emission = target_color
+			mat.emission_energy_multiplier = 3.0
+			mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD
+			print("[PLAYER] ✓ Applied color to ColorIdentifier")
+			return
 	
-	# Emission (Glowing) Settings
-	mat.emission_enabled = true
-	mat.emission = target_color
-	mat.emission_energy_multiplier = 2.0 # High intensity glow
-	mat.emission_operator = BaseMaterial3D.EMISSION_OP_ADD # Use texture to mask emission
+	print("[PLAYER] ⚠ ColorIdentifier mesh not found!")
