@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cd7nwnenk0ao3"]
+[gd_scene load_steps=11 format=3 uid="uid://cd7nwnenk0ao3"]
 
 [ext_resource type="PackedScene" uid="uid://bl6nemac7vefj" path="res://Objects/Player.tscn" id="1_vn7o3"]
 [ext_resource type="PackedScene" uid="uid://cuw5ooqhyl0vo" path="res://Objects/box.tscn" id="2_bt44k"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://dye0um56o6jky" path="res://Objects/platform_l.tscn" id="5_gwceb"]
 [ext_resource type="PackedScene" uid="uid://blep42bxnl3pp" path="res://Objects/finish_line.tscn" id="5_n46q3"]
 [ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="ui_123"]
+[ext_resource type="PackedScene" uid="uid://dpgggk15w3t7s" path="res://UI/GameBackground.tscn" id="bg_123"]
+[ext_resource type="Environment" uid="uid://cdvytmlb28p24" path="res://transparent_environment.tres" id="env_123"]
 
 [node name="Level_2" type="Node3D"]
 
@@ -45,3 +47,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -2, 0)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 light_energy = 16.0
+
+[node name="GameBackground" parent="." instance=ExtResource("bg_123")]
+layer = -1000
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("env_123")

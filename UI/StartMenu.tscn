@@ -1,6 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://startmenuscene"]
 
 [ext_resource type="Script" path="res://UI/start_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/menu_bg.jpg" id="2_bg"]
+[ext_resource type="Script" path="res://UI/background_loader.gd" id="3_loader"]
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
@@ -11,14 +13,18 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.1, 0.12, 1)
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("3_loader")
+texture_path = "res://assets/menu_bg.jpg"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1

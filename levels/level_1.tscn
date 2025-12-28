@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dms1cnw6hp128"]
+[gd_scene load_steps=12 format=3 uid="uid://dms1cnw6hp128"]
 
 [ext_resource type="PackedScene" uid="uid://bl6nemac7vefj" path="res://Objects/Player.tscn" id="1_vn7o3"]
 [ext_resource type="PackedScene" uid="uid://cuw5ooqhyl0vo" path="res://Objects/box.tscn" id="2_bt44k"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://blep42bxnl3pp" path="res://Objects/finish_line.tscn" id="5_n46q3"]
 [ext_resource type="PackedScene" uid="uid://bqjcxyut4poin" path="res://Objects/color_switcher.tscn" id="6_l53as"]
 [ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="ui_123"]
+[ext_resource type="PackedScene" uid="uid://dpgggk15w3t7s" path="res://UI/GameBackground.tscn" id="bg_123"]
+[ext_resource type="Environment" uid="uid://cdvytmlb28p24" path="res://transparent_environment.tres" id="env_123"]
 
 [node name="Level_1" type="Node3D"]
 
@@ -56,3 +58,9 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 6
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.7071068, 0, -0.7071068, 0.7071067, 0, 6, 0)
+
+[node name="GameBackground" parent="." instance=ExtResource("bg_123")]
+layer = -1000
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("env_123")
