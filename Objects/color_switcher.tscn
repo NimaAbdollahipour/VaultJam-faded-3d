@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bqjcxyut4poin"]
+[gd_scene load_steps=7 format=3 uid="uid://bqjcxyut4poin"]
 
 [ext_resource type="Script" uid="uid://dmhuyqwrd00et" path="res://Objects/color_switcher.gd" id="1_3h31j"]
 [ext_resource type="PackedScene" uid="uid://dwkct468pcpyr" path="res://Objects/ColorChanger.glb" id="2_glb"]
@@ -6,7 +6,17 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_thin"]
 size = Vector3(3.6096191, 0.2, 3.4135132)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3h31j"]
+transparency = 1
+albedo_color = Color(0, 1, 1, 1)
+emission_enabled = true
+emission = Color(0, 1, 1, 1)
+emission_energy_multiplier = 2.0
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_3h31j"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wfofu"]
+size = Vector3(3.8640137, 0.7636795, 3.3342285)
 
 [node name="ColorSwitcher" type="StaticBody3D"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
@@ -33,4 +43,11 @@ omni_range = 10.0
 
 [node name="ColorIdentifier" type="MeshInstance3D" parent="."]
 transform = Transform3D(2.5, 0, 0, 0, 1.6, 0, 0, 0, 2.5, 0, 1.7198343, 0)
+material_override = SubResource("StandardMaterial3D_3h31j")
 mesh = SubResource("CylinderMesh_3h31j")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03137207, 3.7161489, 0.0013427748)
+shape = SubResource("BoxShape3D_wfofu")

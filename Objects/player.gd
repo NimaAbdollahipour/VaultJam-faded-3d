@@ -21,7 +21,7 @@ var is_safe: bool = false
 var was_on_floor: bool = false
 var push_cooldown: float = 0.0
 const PUSH_INTERVAL: float = 0.5
-const FADE_DELAY: float = 3.0  # 3 seconds before fading starts
+const FADE_DELAY: float = 2.0  # 2 seconds before fading starts (faster)
 
 # Track collision time with matching-color objects
 var collision_timers: Dictionary = {}  # {object_id: time_colliding}
@@ -163,22 +163,16 @@ func _physics_process(delta: float) -> void:
 				print("[COLLISION] Player: ", player_color, " on Platform: ", collider.platform_color, " (MATCH) - Mode: ", plat_fade_mode)
 				currently_colliding.append(obj_id)
 				
-				# Check fade mode
-				if plat_fade_mode == "Always":
-					# Always mode: fade immediately without timer
+				# Both modes now use timer (2 seconds)
+				if not collision_timers.has(obj_id):
+					collision_timers[obj_id] = 0.0
+				
+				collision_timers[obj_id] += delta
+				
+				# Start fading after 2 seconds of continuous collision
+				if collision_timers[obj_id] >= FADE_DELAY:
 					collider.fade(delta)
-					print("[PLAYER] Fading platform (Always mode)")
-				else:
-					# When Standing mode: use timer
-					if not collision_timers.has(obj_id):
-						collision_timers[obj_id] = 0.0
-					
-					collision_timers[obj_id] += delta
-					
-					# Start fading after 3 seconds of continuous collision
-					if collision_timers[obj_id] >= FADE_DELAY:
-						collider.fade(delta)
-						print("[PLAYER] Fading platform (", collision_timers[obj_id], "s)")
+					print("[PLAYER] Fading platform (", collision_timers[obj_id], "s)")
 				
 				is_on_matching_platform = true
 			else:
@@ -189,22 +183,10 @@ func _physics_process(delta: float) -> void:
 		# Check for Box collision
 		if collider is RigidBody3D and "box_color" in collider:
 			if collider.box_color == player_color:
-				# MATCH: Track collision time
+				# MATCH: Only push, no fading for boxes
 				print("[COLLISION] Player: ", player_color, " touching Box: ", collider.box_color, " (MATCH)")
-				currently_colliding.append(obj_id)
 				
-				if not collision_timers.has(obj_id):
-					collision_timers[obj_id] = 0.0
-				
-				collision_timers[obj_id] += delta
-				
-				# Start fading after 3 seconds AND apply push force
-				if collision_timers[obj_id] >= FADE_DELAY:
-					if collider.has_method("start_fading"):
-						collider.start_fading(delta)
-					print("[PLAYER] Fading box (", collision_timers[obj_id], "s)")
-				
-				# Push physics (always happens regardless of fading)
+				# Push physics
 				var push_dir = -collision.get_normal()
 				push_dir.y = 0
 				push_dir = push_dir.normalized()

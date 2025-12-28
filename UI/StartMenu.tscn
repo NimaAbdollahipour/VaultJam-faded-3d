@@ -47,12 +47,6 @@ theme_override_font_sizes/font_size = 64
 text = "FADED 3D"
 horizontal_alignment = 1
 
-[node name="FadeModeCheckbox" type="CheckBox" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Platforms Always Fade"
-alignment = 1
-
 [node name="ContinueButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32

@@ -24,13 +24,6 @@ const NEON_COLORS = {
 }
 
 func _ready() -> void:
-	# Check for global fade mode setting from menu
-	if get_tree() and get_tree().root.has_meta("platforms_always_fade"):
-		var always_fade = get_tree().root.get_meta("platforms_always_fade")
-		if always_fade:
-			fade_mode = "Always"
-			print("[PLATFORM] Global fade mode applied: Always")
-	
 	visual_meshes.clear()
 	_find_meshes_recursive(self, visual_meshes)
 	update_visuals()

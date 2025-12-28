@@ -1,7 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://cuw5ooqhyl0vo"]
+[gd_scene load_steps=8 format=3 uid="uid://cuw5ooqhyl0vo"]
 
 [ext_resource type="Script" uid="uid://ckrehlt2hvknq" path="res://Objects/box.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://le3g2elhj3io" path="res://Objects/Box.glb" id="2_mesh"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_eic30"]
+rough = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_eic30"]
 size = Vector3(1.9832764, 2.7171478, 2.361267)
@@ -9,10 +12,18 @@ size = Vector3(1.9832764, 2.7171478, 2.361267)
 [sub_resource type="BoxShape3D" id="BoxShape3D_iy76c"]
 size = Vector3(2.137146, 3.0853367, 2.6934776)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eic30"]
+transparency = 1
+albedo_color = Color(0, 1, 1, 1)
+emission_enabled = true
+emission = Color(0, 1, 1, 1)
+emission_energy_multiplier = 2.0
+
 [sub_resource type="BoxMesh" id="BoxMesh_eic30"]
 
 [node name="RigidBody3D" type="RigidBody3D"]
-mass = 0.2
+mass = 0.4
+physics_material_override = SubResource("PhysicsMaterial_eic30")
 script = ExtResource("1_script")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -29,4 +40,5 @@ shape = SubResource("BoxShape3D_iy76c")
 
 [node name="ColorIdentifier" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.8852562, 0, 0, 0, 2.0058117, 0, 0, 0, 1.8419855, 0, 1.389735, 0)
+material_override = SubResource("StandardMaterial3D_eic30")
 mesh = SubResource("BoxMesh_eic30")

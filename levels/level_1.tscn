@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dye0um56o6jky" path="res://Objects/platform_l.tscn" id="5_gwceb"]
 [ext_resource type="PackedScene" uid="uid://blep42bxnl3pp" path="res://Objects/finish_line.tscn" id="5_n46q3"]
 [ext_resource type="PackedScene" uid="uid://bqjcxyut4poin" path="res://Objects/color_switcher.tscn" id="6_l53as"]
-[ext_resource type="PackedScene" path="res://UI/GameBackground.tscn" id="bg_123"]
+[ext_resource type="PackedScene" uid="uid://dpgggk15w3t7s" path="res://UI/GameBackground.tscn" id="bg_123"]
 [ext_resource type="Environment" path="res://transparent_environment.tres" id="env_123"]
 [ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="ui_123"]
 
@@ -15,30 +15,45 @@
 
 [node name="Player" parent="." instance=ExtResource("1_vn7o3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4924238, 0.42147064, 0)
+fade_rate = 0.1
 
 [node name="FinishLine" parent="." instance=ExtResource("5_n46q3")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 67.42557, -1, -0.15558302)
 
 [node name="PlatformS5" parent="." instance=ExtResource("2_jirdo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, -2, 0)
+fade_mode = null
+fade_rate = 0.33
 
 [node name="PlatformS4" parent="." instance=ExtResource("2_jirdo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -2, 0)
+fade_mode = null
+fade_rate = 0.33
 
 [node name="PlatformS3" parent="." instance=ExtResource("2_jirdo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -2, 0)
+fade_mode = "Always"
+fade_rate = 0.33
 
 [node name="PlatformS2" parent="." instance=ExtResource("2_jirdo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -2, 0)
+fade_mode = null
+fade_rate = 0.33
 
 [node name="PlatformS7" parent="." instance=ExtResource("5_gwceb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, -2, 0)
+fade_mode = null
+fade_rate = 0.33
 
 [node name="PlatformS" parent="." instance=ExtResource("2_jirdo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+fade_mode = null
+fade_rate = 0.33
 
 [node name="PlatformS6" parent="." instance=ExtResource("5_btoec")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -2, 0)
+fade_mode = null
+fade_rate = 0.33
 
 [node name="RigidBody3D" parent="." instance=ExtResource("2_bt44k")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, -1, 0)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dpgggk15w3t7s"]
 
-[ext_resource type="Texture2D" path="res://assets/game_bg.jpg" id="1_bg"]
+[ext_resource type="Texture2D" path="res://assets/Background.png" id="1_bg"]
 [ext_resource type="Script" path="res://UI/background_loader.gd" id="2_loader"]
 
 [node name="GameBackground" type="CanvasLayer"]
@@ -16,4 +16,5 @@ texture = ExtResource("1_bg")
 expand_mode = 1
 stretch_mode = 6
 script = ExtResource("2_loader")
-texture_path = "res://assets/game_bg.jpg"
+texture_path = "res://assets/Background.png"
+

@@ -1,9 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://bl6nemac7vefj"]
+[gd_scene load_steps=7 format=3 uid="uid://bl6nemac7vefj"]
 
 [ext_resource type="Script" uid="uid://dykf2lc050g7p" path="res://Objects/player.gd" id="1_n6db0"]
 [ext_resource type="PackedScene" uid="uid://burlww7wdwlsn" path="res://assets/Player.glb" id="2_n6db0"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_n6db0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n6db0"]
+transparency = 1
+albedo_color = Color(0, 1, 1, 0)
+emission_enabled = true
+emission = Color(0, 1, 1, 1)
+emission_energy_multiplier = 0.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_n6db0"]
 
@@ -12,6 +19,7 @@
 [node name="CharacterBody3D" type="CharacterBody3D"]
 axis_lock_linear_z = true
 script = ExtResource("1_n6db0")
+fade_rate = 0.1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 1.1121191, 0)
@@ -20,10 +28,11 @@ shape = SubResource("SphereShape3D_n6db0")
 [node name="Player" parent="." instance=ExtResource("2_n6db0")]
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.92538846, 0.37902012, 0, -0.37902012, 0.92538846, 0, 3.3274765, 6.9938602)
+transform = Transform3D(1, 0, 0, 0, 0.92538846, 0.37902012, 0, -0.37902012, 0.92538846, 0, 4.9271593, 11.186804)
 
 [node name="ColorIdentifier" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, 0, 1.1015652, 0)
+material_override = SubResource("StandardMaterial3D_n6db0")
 mesh = SubResource("SphereMesh_n6db0")
 
 [node name="Area3D" type="Area3D" parent="."]
