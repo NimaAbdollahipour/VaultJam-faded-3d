@@ -2,7 +2,8 @@ extends Node
 
 var music_player: AudioStreamPlayer
 var sfx_player: AudioStreamPlayer
-var theme_resource: AudioStream
+var menu_music_resource: AudioStream
+var game_music_resource: AudioStream
 
 # SFX Cache
 var sfx_resources = {}
@@ -28,10 +29,29 @@ func _ready() -> void:
 	sfx_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(sfx_player)
 	
-	# Load Music
+	# Load Menu Music (theme.mp3)
 	if FileAccess.file_exists("res://assets/theme.mp3"):
-		theme_resource = load("res://assets/theme.mp3")
-		music_player.stream = theme_resource
+		menu_music_resource = load("res://assets/theme.mp3")
+		if menu_music_resource:
+			if menu_music_resource is AudioStreamMP3:
+				menu_music_resource.loop = true
+			print("[AudioManager] Menu music loaded successfully")
+		else:
+			print("[AudioManager] Failed to load theme.mp3")
+	else:
+		print("[AudioManager] theme.mp3 file not found")
+	
+	# Load Game Music (Background.mp3)
+	if FileAccess.file_exists("res://assets/Background.mp3"):
+		game_music_resource = load("res://assets/Background.mp3")
+		if game_music_resource:
+			if game_music_resource is AudioStreamMP3:
+				game_music_resource.loop = true
+			print("[AudioManager] Game music loaded successfully")
+		else:
+			print("[AudioManager] Failed to load Background.mp3")
+	else:
+		print("[AudioManager] Background.mp3 file not found")
 
 	# Preload SFX
 	for key in SFX_FILES:
@@ -41,9 +61,25 @@ func _ready() -> void:
 		else:
 			print("SFX missing: ", path)
 
+func play_menu_music() -> void:
+	if menu_music_resource:
+		if music_player.stream != menu_music_resource:
+			music_player.stream = menu_music_resource
+			music_player.volume_db = 0
+		if not music_player.playing:
+			music_player.play()
+
+func play_game_music() -> void:
+	if game_music_resource:
+		if music_player.stream != game_music_resource:
+			music_player.stream = game_music_resource
+			music_player.volume_db = 0
+		if not music_player.playing:
+			music_player.play()
+
 func play_music() -> void:
-	if music_player.stream and not music_player.playing:
-		music_player.play()
+	# Legacy function - defaults to game music
+	play_game_music()
 
 func stop_music() -> void:
 	if music_player.playing:

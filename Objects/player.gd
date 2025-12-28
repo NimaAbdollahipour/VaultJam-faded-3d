@@ -10,7 +10,7 @@ extends CharacterBody3D
 @export var fade_rate: float = 0.5
 @export var push_force: float = 5.0
 
-const SPEED = 5.0
+const SPEED = 10.0
 const JUMP_VELOCITY = 9
 const BALL_RADIUS = 0.5
 
@@ -77,6 +77,10 @@ func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 var is_on_matching_platform: bool = false
 
 func _process(delta: float) -> void:
+	# Safety check
+	if delta == null or fade_rate == null:
+		return
+	
 	# Get current alpha from the main mesh tracking variable
 	# We'll use the material of the first visual mesh to keep them in sync
 	var first_mat = null
@@ -108,9 +112,10 @@ func _process(delta: float) -> void:
 	
 	# Game Over if player fades out completely
 	if new_alpha <= 0.0:
-
-		get_tree().call_group("GameManager", "game_over")
-		if has_node("/root/AudioManager"):
+		var level = get_tree().current_scene
+		if level and level.has_method("game_over"):
+			level.game_over()
+		if is_inside_tree() and has_node("/root/AudioManager"):
 			get_node("/root/AudioManager").play_sfx("lose")
 		set_process(false)
 		set_physics_process(false)
@@ -135,7 +140,11 @@ func _physics_process(delta: float) -> void:
 	if direction:
 		velocity.x = direction * SPEED
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
+		# Safety check for SPEED constant
+		if SPEED != null:
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+		else:
+			velocity.x = 0
 	
 	velocity.z = 0
 
@@ -157,8 +166,9 @@ func _physics_process(delta: float) -> void:
 	
 	# Check for Game Over (Fall off)
 	if global_position.y < -10.0:
-
-		get_tree().call_group("GameManager", "game_over")
+		var level = get_tree().current_scene
+		if level and level.has_method("game_over"):
+			level.game_over()
 		if has_node("/root/AudioManager"):
 			get_node("/root/AudioManager").play_sfx("lose")
 		set_process(false)
@@ -175,7 +185,7 @@ func _physics_process(delta: float) -> void:
 		
 		# Check if the collider is a platform
 		if collider.has_method("fade") and "platform_color" in collider:
-			var plat_fade_mode = collider.get("fade_mode") if "fade_mode" in collider else "When Standing"
+			var _plat_fade_mode = collider.get("fade_mode") if "fade_mode" in collider else "When Standing"
 			
 			if collider.platform_color == player_color:
 				# MATCH: Track collision time, platform will fade
@@ -202,20 +212,34 @@ func _physics_process(delta: float) -> void:
 				
 		# Check for Box collision
 		if collider is RigidBody3D and "box_color" in collider:
-			if collider.box_color == player_color:
-				# MATCH: Only push, no fading for boxes
-
+			var box_color = collider.box_color
+			
+			# ONLY push if colors match EXACTLY
+			if box_color == player_color:
+				# MATCH: Push the box (no fading)
 				
-				# Push physics
-				var push_dir = -collision.get_normal()
-				push_dir.y = 0
-				push_dir = push_dir.normalized()
-				collider.apply_central_impulse(push_dir * push_force * delta)
-				
-				if push_cooldown <= 0:
-					if has_node("/root/AudioManager"):
-						get_node("/root/AudioManager").play_sfx("push")
-					push_cooldown = PUSH_INTERVAL
+				# Don't push frozen boxes (they're currently fading/respawning)
+				# But DO wake up sleeping boxes!
+				if collider.freeze:
+					pass  # Frozen, can't push
+				else:
+					# Wake up the box if it's sleeping
+					if collider.sleeping:
+						collider.sleeping = false
+					
+					# Push physics
+					var push_dir = -collision.get_normal()
+					push_dir.y = 0
+					push_dir = push_dir.normalized()
+					
+					if push_dir.length() > 0:
+						collider.apply_central_impulse(push_dir * push_force * delta)
+					
+					if push_cooldown <= 0:
+						if has_node("/root/AudioManager"):
+							get_node("/root/AudioManager").play_sfx("push")
+						push_cooldown = PUSH_INTERVAL
+			# If colors don't match, player can't interact with box
 	
 	# Clear timers for objects we're no longer touching
 	var to_remove = []

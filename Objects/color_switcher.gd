@@ -30,12 +30,15 @@ func _ready() -> void:
 			area_3d.body_entered.connect(_on_body_entered)
 
 func apply_tech_pattern_to_model() -> void:
-	# Load tech_pattern texture
+	# Load tech_platform_02 texture (blue/white tech lines!)
 	var tech_texture: Texture2D = null
-	if FileAccess.file_exists("res://assets/tech_pattern.jpg"):
-		tech_texture = load("res://assets/tech_pattern.jpg")
-	elif FileAccess.file_exists("res://assets/tech_pattern.png"):
-		tech_texture = load("res://assets/tech_pattern.png")
+	
+	if ResourceLoader.exists("res://assets/tech_platform_02.png"):
+		tech_texture = ResourceLoader.load("res://assets/tech_platform_02.png")
+	elif ResourceLoader.exists("res://assets/tech_pattern.png"):
+		tech_texture = ResourceLoader.load("res://assets/tech_pattern.png")
+	elif ResourceLoader.exists("res://assets/tech_pattern.jpg"):
+		tech_texture = ResourceLoader.load("res://assets/tech_pattern.jpg")
 	
 	if not tech_texture:
 		return

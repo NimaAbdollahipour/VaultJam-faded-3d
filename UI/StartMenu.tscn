@@ -43,25 +43,49 @@ theme_override_constants/separation = 40
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(0.5, 0.8, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
+theme_override_colors/font_outline_color = Color(0.2, 0.4, 0.8, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 72
 text = "FADED 3D"
 horizontal_alignment = 1
 
 [node name="ContinueButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_colors/font_hover_color = Color(0.5, 0.8, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.3, 0.6, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "CONTINUE"
 
 [node name="PlayButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_colors/font_hover_color = Color(0.5, 0.8, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.3, 0.6, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "NEW GAME"
 
+[node name="LevelsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_colors/font_hover_color = Color(0.5, 0.8, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.3, 0.6, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "LEVELS"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7, 0.7, 1)
+theme_override_colors/font_hover_color = Color(1, 0.5, 0.5, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.3, 0.3, 1)
 theme_override_font_sizes/font_size = 32
 text = "QUIT"
 
 [connection signal="pressed" from="VBoxContainer/ContinueButton" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="VBoxContainer/LevelsButton" to="." method="_on_levels_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_pressed"]

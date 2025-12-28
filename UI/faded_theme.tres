@@ -1,0 +1,21 @@
+[gd_resource type="Theme" format=3]
+
+[resource]
+default_font_size = 32
+
+; Button styling
+Button/colors/font_color = Color(0.9, 0.9, 1, 1)
+Button/colors/font_pressed_color = Color(0.5, 0.7, 1, 1)
+Button/colors/font_hover_color = Color(0.7, 0.9, 1, 1)
+Button/colors/font_disabled_color = Color(0.4, 0.4, 0.5, 0.5)
+Button/font_sizes/font_size = 32
+
+; Label styling  
+Label/colors/font_color = Color(0.9, 0.9, 1, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.5)
+Label/font_sizes/font_size = 48
+
+; Add shadow and outline for better readability
+Label/constants/shadow_offset_x = 2
+Label/constants/shadow_offset_y = 2
+Label/constants/outline_size = 2

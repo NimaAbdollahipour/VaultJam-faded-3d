@@ -26,6 +26,11 @@ const NEON_COLORS = {
 func _ready() -> void:
 	visual_meshes.clear()
 	_find_meshes_recursive(self, visual_meshes)
+	
+	# Duplicate materials so each platform has its own
+	for vm in visual_meshes:
+		if vm.material_override:
+			vm.material_override = vm.material_override.duplicate()
 	update_visuals()
 
 func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
@@ -35,15 +40,22 @@ func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 		_find_meshes_recursive(child, list)
 
 func update_visuals() -> void:
-	# Apply game color with tech_pattern texture
+	# Apply game color with tech texture
 	var target_color = NEON_COLORS.get(platform_color, Color(platform_color))
 	
-	# Load tech_pattern texture
+	# Load finish_line_texture (gold/black sci-fi texture!)
 	var tech_texture: Texture2D = null
-	if FileAccess.file_exists("res://assets/tech_pattern.jpg"):
-		tech_texture = load("res://assets/tech_pattern.jpg")
-	elif FileAccess.file_exists("res://assets/tech_pattern.png"):
-		tech_texture = load("res://assets/tech_pattern.png")
+	
+	if ResourceLoader.exists("res://assets/finish_line_texture.png"):
+		tech_texture = ResourceLoader.load("res://assets/finish_line.png")
+	elif ResourceLoader.exists("res://assets/tech_platform_02.png"):
+		tech_texture = ResourceLoader.load("res://assets/tech_platform_02.png")
+	elif ResourceLoader.exists("res://assets/tech_platform_01.png"):
+		tech_texture = ResourceLoader.load("res://assets/tech_platform_01.png")
+	elif ResourceLoader.exists("res://assets/tech_pattern.png"):
+		tech_texture = ResourceLoader.load("res://assets/tech_pattern.png")
+	elif ResourceLoader.exists("res://assets/tech_pattern.jpg"):
+		tech_texture = ResourceLoader.load("res://assets/tech_pattern.jpg")
 	
 	for vm in visual_meshes:
 		# Apply color with tech_pattern texture
@@ -74,6 +86,10 @@ func update_visuals() -> void:
 
 
 func fade(delta: float) -> void:
+	# Safety check for fade_rate
+	if fade_rate == null or delta == null:
+		return
+	
 	var fully_faded = true
 	
 	for vm in visual_meshes:

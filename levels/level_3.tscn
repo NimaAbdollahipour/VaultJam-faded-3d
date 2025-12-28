@@ -1,0 +1,211 @@
+[gd_scene load_steps=11 format=3 uid="uid://b2dubsh24w5dv"]
+
+[ext_resource type="Script" uid="uid://detsfe12ixfhw" path="res://levels/level_script.gd" id="1_wj73x"]
+[ext_resource type="PackedScene" uid="uid://bl6nemac7vefj" path="res://Objects/Player.tscn" id="2_0unm6"]
+[ext_resource type="Script" uid="uid://b1r4q2emateoa" path="res://levels/box_spawner.gd" id="2_spawner"]
+[ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="3_q42ux"]
+[ext_resource type="PackedScene" uid="uid://dpgggk15w3t7s" path="res://UI/GameBackground.tscn" id="4_wi0qq"]
+[ext_resource type="Environment" path="res://transparent_environment.tres" id="5_s3q8p"]
+[ext_resource type="PackedScene" uid="uid://bqjcxyut4poin" path="res://Objects/color_switcher.tscn" id="6_u4kh1"]
+[ext_resource type="PackedScene" uid="uid://b6wx5mrxxavpn" path="res://Objects/platform_s.tscn" id="7_svivd"]
+[ext_resource type="PackedScene" uid="uid://blep42bxnl3pp" path="res://Objects/finish_line.tscn" id="9_46211"]
+[ext_resource type="PackedScene" uid="uid://cuw5ooqhyl0vo" path="res://Objects/box.tscn" id="10_t5hu4"]
+
+[node name="Level_1" type="Node3D"]
+script = ExtResource("1_wj73x")
+
+[node name="BoxSpawner" type="Node3D" parent="."]
+script = ExtResource("2_spawner")
+
+[node name="Player" parent="." instance=ExtResource("2_0unm6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4924238, 2.6861691, 0)
+player_color = "Purple"
+push_force = 9.0
+
+[node name="GameUI" parent="." instance=ExtResource("3_q42ux")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8637514, 3, 0)
+light_energy = 16.0
+light_size = 1.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 6, 0)
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.7071068, 0, -0.7071068, 0.7071067, 0, 6, 0)
+
+[node name="GameBackground" parent="." instance=ExtResource("4_wi0qq")]
+layer = -1000
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("5_s3q8p")
+
+[node name="ColorSwitcher" parent="." instance=ExtResource("6_u4kh1")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 6.321851, 0.83156013, 0)
+switcher_color = "Red"
+
+[node name="ColorSwitcher2" parent="." instance=ExtResource("6_u4kh1")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 17.184998, 0.83156013, 0)
+
+[node name="PlatformS5" parent="." instance=ExtResource("7_svivd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -0.18024302, 0)
+platform_color = "Red"
+fade_mode = "Always"
+
+[node name="PlatformS4" parent="." instance=ExtResource("7_svivd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -0.18024302, 0)
+platform_color = "Red"
+fade_mode = "Always"
+
+[node name="FinishLine" parent="." instance=ExtResource("9_46211")]
+transform = Transform3D(0.72, 0, 0, 0, 0.72, 0, 0, 0, 0.72, 52, 3.573536, 0)
+
+[node name="PlatformS3" parent="." instance=ExtResource("7_svivd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.78708, 2.295333, 0)
+
+[node name="PlatformS9" parent="." instance=ExtResource("7_svivd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
+
+[node name="RigidBody3D" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, -6.56997, 12.887106, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D2" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, -2.957612, 12.763453, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D3" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, -6.510269, 16.658152, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D4" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9341507, 16.6394, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D5" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5505714, 20.812393, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D6" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9341507, 20.812393, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D7" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5505714, 24.650368, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D8" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9341507, 24.650368, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D9" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, -6.56997, 29.775684, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D10" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, -2.957612, 29.65203, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D17" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.429228, 20.812393, 0)
+mass = 15.0
+box_color = "Red"
+
+[node name="RigidBody3D18" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.045649, 20.812393, 0)
+mass = 15.0
+box_color = "Red"
+
+[node name="RigidBody3D19" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.429228, 24.650368, 0)
+mass = 15.0
+box_color = "Red"
+
+[node name="RigidBody3D20" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.045649, 24.650368, 0)
+mass = 15.0
+box_color = "Red"
+
+[node name="RigidBody3D21" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, 13.022188, 29.65203, 0)
+mass = 15.0
+box_color = "Red"
+
+[node name="RigidBody3D22" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.98763, 20.812393, 0)
+mass = 15.0
+
+[node name="RigidBody3D23" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.60405, 20.812393, 0)
+mass = 15.0
+
+[node name="RigidBody3D24" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.98763, 24.650368, 0)
+mass = 15.0
+
+[node name="RigidBody3D25" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.60405, 24.650368, 0)
+mass = 15.0
+
+[node name="RigidBody3D26" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, 47.58059, 29.65203, 0)
+mass = 15.0
+
+[node name="RigidBody3D11" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(0.9998747, 0.015829476, 0, -0.015829476, 0.9998747, 0, 0, 0, 1, -6.510269, 33.54673, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D12" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9341507, 33.527977, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D13" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5505714, 37.70097, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D14" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9341507, 37.70097, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D15" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5505714, 41.538944, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="RigidBody3D16" parent="." instance=ExtResource("10_t5hu4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9341507, 41.538944, 0)
+mass = 15.0
+box_color = "Purple"
+
+[node name="Container" type="Container" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextEdit" type="TextEdit" parent="Container"]
+layout_mode = 2
+text = "LOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOL"
+placeholder_text = "LOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOLLOL"

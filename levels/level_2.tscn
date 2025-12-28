@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cd7nwnenk0ao3"]
+[gd_scene load_steps=12 format=3 uid="uid://bwb6p62ibcuyv"]
 
 [ext_resource type="PackedScene" uid="uid://bl6nemac7vefj" path="res://Objects/Player.tscn" id="1_vn7o3"]
 [ext_resource type="PackedScene" uid="uid://cuw5ooqhyl0vo" path="res://Objects/box.tscn" id="2_bt44k"]
@@ -7,55 +7,81 @@
 [ext_resource type="PackedScene" uid="uid://dye0um56o6jky" path="res://Objects/platform_l.tscn" id="5_gwceb"]
 [ext_resource type="PackedScene" uid="uid://blep42bxnl3pp" path="res://Objects/finish_line.tscn" id="5_n46q3"]
 [ext_resource type="PackedScene" uid="uid://bqjcxyut4poin" path="res://Objects/color_switcher.tscn" id="6_l53as"]
-[ext_resource type="PackedScene" path="res://UI/GameBackground.tscn" id="bg_123"]
+[ext_resource type="PackedScene" uid="uid://dpgggk15w3t7s" path="res://UI/GameBackground.tscn" id="bg_123"]
 [ext_resource type="Environment" path="res://transparent_environment.tres" id="env_123"]
+[ext_resource type="Script" uid="uid://detsfe12ixfhw" path="res://levels/level_script.gd" id="level_script"]
 [ext_resource type="PackedScene" uid="uid://gameuiscene" path="res://UI/GameUI.tscn" id="ui_123"]
 
-[node name="Level_2" type="Node3D"]
+[node name="Level_1" type="Node3D"]
+script = ExtResource("level_script")
 
 [node name="Player" parent="." instance=ExtResource("1_vn7o3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -0.50834405, 0)
-axis_lock_linear_z = true
-
-[node name="FinishLine" parent="." instance=ExtResource("5_n46q3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67, -1, 0)
-
-[node name="RigidBody3D" parent="." instance=ExtResource("2_bt44k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
-box_color = "Orange"
-
-[node name="PlatformS5" parent="." instance=ExtResource("2_jirdo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, -2, 0)
-
-[node name="PlatformS4" parent="." instance=ExtResource("2_jirdo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -2, 0)
-
-[node name="PlatformS3" parent="." instance=ExtResource("2_jirdo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -2, 0)
-
-[node name="PlatformS2" parent="." instance=ExtResource("2_jirdo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -2, 0)
-
-[node name="PlatformS7" parent="." instance=ExtResource("5_gwceb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, -2, 0)
-
-[node name="PlatformS" parent="." instance=ExtResource("2_jirdo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
-
-[node name="PlatformS6" parent="." instance=ExtResource("5_btoec")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -2, 0)
-
-[node name="ColorSwitcher" parent="." instance=ExtResource("6_l53as")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 12, -1, 0)
-switcher_color = "Green"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4924238, 1.8786783, 0)
+push_force = 9.0
 
 [node name="GameUI" parent="." instance=ExtResource("ui_123")]
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 light_energy = 16.0
+light_size = 1.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 6, 0)
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.7071068, 0, -0.7071068, 0.7071067, 0, 6, 0)
 
 [node name="GameBackground" parent="." instance=ExtResource("bg_123")]
 layer = -1000
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("env_123")
+
+[node name="ColorSwitcher" parent="." instance=ExtResource("6_l53as")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19, -0.07715583, 0)
+switcher_color = "Red"
+
+[node name="PlatformS5" parent="." instance=ExtResource("2_jirdo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -0.9921987, 0)
+fade_mode = "Always"
+
+[node name="PlatformS4" parent="." instance=ExtResource("2_jirdo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -0.9921987, 0)
+fade_mode = "Always"
+
+[node name="PlatformS2" parent="." instance=ExtResource("2_jirdo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 8, 0)
+platform_color = "Red"
+fade_mode = "Always"
+fade_rate = 9999.0
+
+[node name="PlatformS7" parent="." instance=ExtResource("2_jirdo")]
+transform = Transform3D(-0.020000003, 0, 0, 0, 0.19999999, 0, 0, 0, -0.100000024, 26.14846, 11.252188, 0.3018036)
+platform_color = "Red"
+
+[node name="FinishLine" parent="." instance=ExtResource("5_n46q3")]
+transform = Transform3D(0.72, 0, 0, 0, 0.72, 0, 0, 0, 0.72, 52, -6.3, 0)
+
+[node name="PlatformS6" parent="." instance=ExtResource("5_gwceb")]
+transform = Transform3D(0.8660254, -0.5, 0, 0.5, 0.8660254, 0, 0, 0, 1, 35, 15, 0)
+platform_color = "Gold"
+
+[node name="PlatformS3" parent="." instance=ExtResource("2_jirdo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.331886, -7.3, 0)
+
+[node name="PlatformS8" parent="." instance=ExtResource("2_jirdo")]
+transform = Transform3D(0.48320597, 0.87550664, 0, -0.87550664, 0.48320597, 0, 0, 0, 1, 45.45225, 26.861395, -0.047651768)
+platform_color = "Gold"
+
+[node name="RigidBody3D" parent="." instance=ExtResource("2_bt44k")]
+transform = Transform3D(0.8660254, -0.5, 0, 0.5, 0.8660254, 0, 0, 0, 1, 27.420197, 11.851816, -0.37190628)
+box_color = "Red"
+
+[node name="PlatformS9" parent="." instance=ExtResource("2_jirdo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
+
+[node name="PlatformS" parent="." instance=ExtResource("5_btoec")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 43.288403, -0.25450826, 0)
+fade_mode = "Always"
+fade_rate = 9999.0

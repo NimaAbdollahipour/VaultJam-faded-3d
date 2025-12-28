@@ -22,8 +22,15 @@ const NEON_COLORS = {
 func _ready() -> void:
 	visual_meshes.clear()
 	_find_meshes_recursive(self, visual_meshes)
+	
+	# CRITICAL: Duplicate materials so each box instance has its own
+	# This prevents changing one box's color from affecting all boxes
+	for vm in visual_meshes:
+		if vm.material_override:
+			vm.material_override = vm.material_override.duplicate()
 
 	update_visuals()
+	print("[Box] Ready - color:", box_color)
 
 func _find_meshes_recursive(node: Node, list: Array[MeshInstance3D]) -> void:
 	for child in node.get_children():
@@ -57,7 +64,12 @@ func update_visuals() -> void:
 	
 
 
+
 func start_fading(delta: float) -> void:
+	# Safety check for delta parameter
+	if delta == null:
+		return
+	
 	# Fade all meshes including ColorIdentifier
 	var fully_faded = true
 	
